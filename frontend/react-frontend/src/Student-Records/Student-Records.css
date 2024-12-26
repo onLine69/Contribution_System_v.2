@@ -1,0 +1,122 @@
+#student-records-actions{
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    padding: 10px;
+    margin: 0 50px;
+    border-radius: 40px;
+    background: rgba(59, 70, 171, 0.30);
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+#search-student-form{
+    width: 70%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+#column-search{
+    width: 150px;
+    height: 35px;
+    padding: 0px 10px;
+    margin: auto;
+    border-radius: 20px;
+    border: 3px solid #2C2C2C;
+}
+
+#param-search{
+    width: 80%;
+    height: 35px;
+    padding: 0 0 0 10px;
+    border: 0;
+    border-radius: 20px;
+}
+
+
+#add-student{
+    display: flex;
+    padding: 0px 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    width: 90px;
+    height: 35px;
+    border: 0;
+    border-radius: 20px;
+    color: #FFF;
+    background: linear-gradient(180deg, rgba(59, 70, 171, 0.50) 0%, rgba(25, 37, 142, 0.50) 100%);
+}
+
+#bulk-add-students{
+    display: flex;
+    width: 90px;
+    height: 29px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    border: 3px solid #2C2C2C;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+table {
+    width: 90%;
+    border-collapse: collapse;
+    margin: auto;
+}
+
+thead th {
+    text-align: center;
+    padding: 8px;
+    border-bottom: rgba(161, 161, 161, 0.25) 1px solid;
+}
+
+tbody td {
+    text-align: center;
+    padding: 8px;
+}
+
+tbody tr:hover {
+    background-color: rgba(151, 144, 144, 0.30);
+}
+
+tfoot {
+    text-align: left;
+    padding: 10px;
+    border-top: rgba(161, 161, 161, 0.25) 1px solid;
+}
+
+.edit-student {
+    cursor: pointer;
+    height: 30px;
+    width: 85px;
+    border-radius: 5px;
+    border: 3px solid #2C2C2C;
+    color: #2C2C2C;
+    font-weight: bolder;
+    background-color: #FFF;
+}
+
+.delete-student {
+    cursor: pointer;
+    height: 30px;
+    width: 85px;
+    border-radius: 5px;
+    border: 3px solid #FF5050;
+    color: #FF5050;
+    font-weight: bolder;
+    background-color: #FFF;
+}

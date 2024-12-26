@@ -1,24 +1,27 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins');
-
 #header {
     font-family: Poppins, sans-serif;
     background-color: white;
     height: 100px;
+    width: calc(100% - 275px);
+    margin: 0;
+    margin-left: 275px;
     color: #3B46AB;
     display: flex;
     justify-content: end;
-    margin: 0;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
 }
 
 #profile {
-    margin: 20px 50px 25px auto;
+    margin: auto 50px auto auto;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: flex-end;
     width: 70%;
     height: fit-content;
-    border: #3B46AB 1px solid;
 }
 
 #profile-info {
