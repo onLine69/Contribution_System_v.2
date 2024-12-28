@@ -14,7 +14,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 
 def start_app():
     app.config['SECRET_KEY'] = SECRET_KEY
-    print("Starting app")
+    
     return app
 
 def get_connection():
@@ -32,8 +32,7 @@ def get_connection():
 def index():
     try:
         #fetch the parameters
-        cursor = get_connection().cursor()
-        students = ThisApp.getStudents(cursor)
+        students = ThisApp.getStudents(get_connection())
         return make_response(jsonify(students), 200)
     except Exception as e:
         print(e)
@@ -46,14 +45,47 @@ def bulkAdd():
         file = request.files['file-upload']
         print(f"Received file: {file.filename}")
 
-        # Get the cursor from the database connection
-        cursor = get_connection().cursor()
-
         # Call the adds function to insert the data
-        ThisApp.adds(cursor, file)
+        ThisApp.adds(get_connection(), file)
 
         # Return a success message
         return make_response(jsonify({'message': 'Bulk add successful'}), 200)
     except Exception as e:
         print(f"Error: {e}")
+        return make_response(jsonify({'message': str(e)}), 400)
+    
+
+@app.route('/add', methods=["POST"])
+def addStudent():
+    try:
+        req = request.get_json()
+        print(req)
+        ThisApp.add(get_connection(), (req['full_name'], req['id_number'], req['gender'], req['year_level'], req['program_code'], req['notes']))
+        return make_response(jsonify({'message': 'Add Success'}), 200)
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'message': str(e)}), 400)
+    
+
+@app.route('/update', methods=["PUT"])
+def updateStudent():
+    try:
+        req = request.get_json()
+        print(req)
+        ThisApp.update(get_connection(), (req['full_name'], req['id_number'], req['gender'], req['year_level'], req['program_code'], req['notes'], req['original_id']))
+        return make_response(jsonify({'message': 'Update Success'}), 200)
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'message': str(e)}), 400)
+    
+
+@app.route('/delete', methods=["DELETE"])
+def deleteStudent():
+    try:
+        req = request.get_json()
+        print(req)
+        ThisApp.delete(get_connection(), req['id_number'])
+        return make_response(jsonify({'message': 'Delete Success'}), 200)
+    except Exception as e:
+        print(e)
         return make_response(jsonify({'message': str(e)}), 400)
