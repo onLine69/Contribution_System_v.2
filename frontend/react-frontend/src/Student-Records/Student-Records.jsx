@@ -3,9 +3,11 @@ import "./Student-Records.css";
 import TableHeader from "./Table-Header.jsx";
 import TableRow from "./Table-Row.jsx";
 import StudentFormModal from "./Student-Form-Modal.jsx";
-import bulkAddStudents from "./bulkAddStudents.js";
 
-// Named export of StudentContext
+import fetchStudents from "./requests/fetchStudents.js";
+import bulkAddStudents from "./requests/bulkAddStudents.js";
+import fetchProgramCodes from "./requests/fetchProgramCodes.js";
+
 export const StudentContext = createContext();
 
 export default function StudentRecords() {
@@ -31,31 +33,11 @@ export default function StudentRecords() {
   const [students, setStudents] = useState([]);
   const [error, setError] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
-  const fetchStudents = async () => {
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:5000/student-records/get-all",
-        { method: "GET" }
-      );
-      const text = await response.text();
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = JSON.parse(text);
-      const updatedData = data.map((element, index) => ({
-        ...element,
-        number: index,
-      }));
-      setStudents(updatedData);
-    } catch (error) {
-      console.error("There was a problem with the fetch operation:", error);
-      setError(error);
-    }
-  };
+  const [programCodes, setProgramCodes] = useState([]);
 
   useEffect(() => {
-    fetchStudents();
+    fetchStudents(setStudents, setError);
+    fetchProgramCodes(setProgramCodes);
   }, []);
 
   const operationArea = (
@@ -131,7 +113,7 @@ export default function StudentRecords() {
   return (
     <>
       {/* Use StudentContext.Provider to pass the setStudents function */}
-      <StudentContext.Provider value={setStudents}>
+      <StudentContext.Provider value={{setStudents, programCodes}}>
         {operationArea}
         {isAddModalOpen && (
           <StudentFormModal
@@ -146,9 +128,7 @@ export default function StudentRecords() {
           <tbody>
             {error ? (
               <tr key="error-row">
-                <td colSpan="8">
-                  Error: {error.message}. Check the backend if working.
-                </td>
+                <td colSpan="8"> Error: {error.message}. Check the backend if working. </td>
               </tr>
             ) : filteredStudents.length > 0 ? (
               filteredStudents.map((student, index) => (
@@ -161,10 +141,7 @@ export default function StudentRecords() {
             ) : (
               <tr key="error-row">
                 {students.length > 0 ? (
-                  <td colSpan="8">
-                    No student matches the search parameters. &#123; '
-                    {columnSearch}' has "{paramSearch}" &#125;
-                  </td>
+                  <td colSpan="8"> No student matches the search parameters. &#123; '{columnSearch}' has "{paramSearch}" &#125; </td>
                 ) : (
                   <td colSpan="8">
                     <i>No Student</i>

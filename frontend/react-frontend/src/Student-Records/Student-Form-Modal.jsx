@@ -1,21 +1,22 @@
-import { useState, useContext, useEffect } from "react";
-import { submitForm } from "./submitForm.js";
+import { useState, useContext } from "react";
+import { submitForm } from "./requests/submitForm.js";
 import { StudentContext } from "./Student-Records.jsx";
 import "./Student-Form-Modal.css";
 
 
 export default function StudentFormModal({ purpose, student, isOpen , closeModal }) {
+    const {setStudents, programCodes} = useContext(StudentContext);
     const [formData, setFormData] = useState({
         full_name: student?.full_name || '',
         id_number: student?.id_number || '',
         gender: student?.gender || 'M',
         year_level: student?.year_level || 1,
-        program_code: student?.program_code || '',
+        program_code: student?.program_code || programCodes[0],
         notes: student?.notes || '',
     });
 
     const [errors, setErrors] = useState({});
-    const setStudents = useContext(StudentContext);
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -52,34 +53,6 @@ export default function StudentFormModal({ purpose, student, isOpen , closeModal
             return newErrors; // Return the updated errors
         });
     };
-
-    const [programCodes, setProgramCodes] = useState([]);
-    const fetchProgramCodes = async () => {
-        try {
-            const response = await fetch("http://127.0.0.1:5000/student-records/program-codes/CCS-EC", 
-                { method: "GET" }
-            );
-            
-            if (!response.ok) {
-                const errorText = await response.text(); // Await the text content
-                throw new Error(errorText); // Throw the error with the text content
-            }
-
-            const data = await response.json();
-            setProgramCodes(p => {
-                // Directly concatenate the data array to the existing array (p)
-                return [...p, ...data.map(d => d.code)];
-            });
-        } catch (error) {
-            console.error("There was a problem with the fetch operation:", error.message);
-        }
-    };
-
-    useEffect(() => {
-        fetchProgramCodes();
-    }, []);
-    
-    
     
     // Overlay component
     const overlay = (
@@ -161,6 +134,7 @@ export default function StudentFormModal({ purpose, student, isOpen , closeModal
                                 if (purpose === "Edit") {
                                     updatedStudents[student.number] = { ...updatedStudents[student.number], ...formData };  // Merge the updated data
                                 } else {
+                                    formData['number'] = updatedStudents.length;
                                     updatedStudents.push({ ...student, ...formData });  // Add the new student
                                 }
                             

@@ -2,7 +2,7 @@ import Swal from 'sweetalert2'
 
 export async function deleteStudent(studentID, setStudents){
     Swal.fire({
-        title: "Are you sure you want to delete this student?",
+        title: "Are you sure you want to delete the record of this student?",
         text: `Once deleted, student '${studentID}' can never be recovered.`,
         icon: "warning",
         showCancelButton: true
@@ -18,14 +18,14 @@ export async function deleteStudent(studentID, setStudents){
             .then(response => {
                 if (response.ok) {
                     Swal.fire({
-                        text:  `Student '${studentID}' has been deleted successfully.`,
+                        text:  `Student ${studentID}'s record has been deleted successfully.`,
                         icon: "success"
                     }).then(() => {
                         setStudents(prevStudents => {return prevStudents.filter(pStudent => pStudent.id_number !== studentID)});
                     });
                 } else {
                     Swal.fire({
-                        text:  'Failed to delete the note. Please try again.',
+                        text:  'Failed to delete the student record. Please try again.',
                         icon: "error"
                     });
                 }
@@ -38,7 +38,7 @@ export async function deleteStudent(studentID, setStudents){
             });
         } else {
             Swal.fire({
-                text: "Note deletion is cancelled."
+                text: "Student record deletion is cancelled."
             });
         }
     }); 

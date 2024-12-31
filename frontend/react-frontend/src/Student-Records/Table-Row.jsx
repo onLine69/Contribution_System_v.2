@@ -1,12 +1,12 @@
 import { useState, useContext } from "react";
 import { StudentContext } from "./Student-Records.jsx";
 import StudentFormModal from "./Student-Form-Modal.jsx";
-import { deleteStudent } from "./deleteStudent.js";
+import { deleteStudent } from "./requests/deleteStudent.js";
 
 export default function TableRow({ student, count }) {
   // State to control modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const setStudents = useContext(StudentContext);
+  const {setStudents, _} = useContext(StudentContext);
 
   // Function to show the modal
   const showModal = () => {
