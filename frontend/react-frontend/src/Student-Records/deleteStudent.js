@@ -8,7 +8,7 @@ export async function deleteStudent(studentID, setStudents){
         showCancelButton: true
     }).then((willDelete) => {
         if (willDelete.isConfirmed){
-            fetch(`http://127.0.0.1:5000/delete`, {
+            fetch(`http://127.0.0.1:5000/student-records/delete`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

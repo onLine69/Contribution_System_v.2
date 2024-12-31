@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { submitForm } from "./submitForm.js";
 import { StudentContext } from "./Student-Records.jsx";
 import "./Student-Form-Modal.css";
@@ -10,7 +10,7 @@ export default function StudentFormModal({ purpose, student, isOpen , closeModal
         id_number: student?.id_number || '',
         gender: student?.gender || 'M',
         year_level: student?.year_level || 1,
-        program_code: student?.program_code || "BSCA",
+        program_code: student?.program_code || '',
         notes: student?.notes || '',
     });
 
@@ -52,6 +52,33 @@ export default function StudentFormModal({ purpose, student, isOpen , closeModal
             return newErrors; // Return the updated errors
         });
     };
+
+    const [programCodes, setProgramCodes] = useState([]);
+    const fetchProgramCodes = async () => {
+        try {
+            const response = await fetch("http://127.0.0.1:5000/student-records/program-codes/CCS-EC", 
+                { method: "GET" }
+            );
+            
+            if (!response.ok) {
+                const errorText = await response.text(); // Await the text content
+                throw new Error(errorText); // Throw the error with the text content
+            }
+
+            const data = await response.json();
+            setProgramCodes(p => {
+                // Directly concatenate the data array to the existing array (p)
+                return [...p, ...data.map(d => d.code)];
+            });
+        } catch (error) {
+            console.error("There was a problem with the fetch operation:", error.message);
+        }
+    };
+
+    useEffect(() => {
+        fetchProgramCodes();
+    }, []);
+    
     
     
     // Overlay component
@@ -62,7 +89,7 @@ export default function StudentFormModal({ purpose, student, isOpen , closeModal
     // Modal content
     const modal = (
         <div className="modal">
-            <h1 style={{width: "300px", margin: "10px auto", display: "flex", justifyContent: "center"}}>{purpose} Student</h1>
+            <h1 style={{width: "50%", margin: "10px auto", display: "flex", justifyContent: "center"}}>{purpose} Student</h1>
             <div className={"form"}>
                 <div className="form-group">
                     <label htmlFor="full_name">Full Name</label>
@@ -104,14 +131,12 @@ export default function StudentFormModal({ purpose, student, isOpen , closeModal
                         <option value={4}>4th Year</option>
                     </select>
                 </div>
-                {/* TODO: Fetch the available program codes from the database */}
                 <div className="form-group">
                     <label htmlFor="program_code">Program Code</label>
                     <select id="program_code" name="program_code" value={formData.program_code} className={"form-input"} onChange={handleChange} >
-                        <option value="BSCA">BSCA</option>
-                        <option value="BSCS">BSCS</option>
-                        <option value="BSIS">BSIS</option>
-                        <option value="BSIT">BSIT</option>
+                        { programCodes.map((code, index) => {
+                            return <option key={index} value={code}>{code}</option>;
+                        }) }
                     </select>
                 </div>
 

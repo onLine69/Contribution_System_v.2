@@ -32,7 +32,7 @@ export async function submitForm(purpose, setErrors, isOkay, student){
     }
 
     if (isOkay) {
-        const URL = purpose === "Add"? "http://127.0.0.1:5000/add" : "http://127.0.0.1:5000/update";
+        const URL = purpose === "Add"? "http://127.0.0.1:5000/student-records/add" : "http://127.0.0.1:5000/student-records/update";
         const METHOD = purpose === "Add"? "POST" : "PUT";
         
         const response = await fetch(URL, 

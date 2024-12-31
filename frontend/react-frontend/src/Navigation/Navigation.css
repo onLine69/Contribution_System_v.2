@@ -17,7 +17,7 @@
 #app-title{
     display: flex;
     height: 100px;
-    padding: 0px 20px;
+    padding: 10px 20px 0px 20px;
     align-items: center;
     gap: 14px;
     align-self: stretch;
@@ -116,7 +116,7 @@
     text-decoration: none;
 }
 
-#vertical-nav .nav-item{
+.nav-item{
     display: flex;
     width: calc(100% - 30px);
     height: 50px;
