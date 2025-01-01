@@ -3,7 +3,7 @@ from . import student_records_bp
 from .model import StudentsRecordsModel
 
 @student_records_bp.route('/get-all', methods=["GET"])
-def index():
+def getStudents():
     try:
         #fetch the parameters
         students = StudentsRecordsModel.getStudents()
@@ -11,16 +11,6 @@ def index():
     except Exception as e:
         print(e)
         return make_response(jsonify({'message': 'MySQL error'}), 400)
-    
-
-@student_records_bp.route('/program-codes/<string:organization_code>', methods=["GET"])
-def programCodes(organization_code :str):
-    try:
-        program_codes = StudentsRecordsModel.getProgramCodes(organization_code)
-        return make_response(jsonify(program_codes), 200)
-    except Exception as e:
-        print(e)
-        return make_response(jsonify({'message': 'MySQL error'}), 400) 
     
 @student_records_bp.route('/bulk-add', methods=["POST"])
 def bulkAdd():

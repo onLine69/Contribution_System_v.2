@@ -6,7 +6,7 @@ import StudentFormModal from "./Student-Form-Modal.jsx";
 
 import fetchStudents from "./requests/fetchStudents.js";
 import bulkAddStudents from "./requests/bulkAddStudents.js";
-import fetchProgramCodes from "./requests/fetchProgramCodes.js";
+import fetchProgramCodes from "../fetchProgramCodes.js";
 
 export const StudentContext = createContext();
 

@@ -1,23 +1,8 @@
 import pandas as pd
-import os
 from io import BytesIO
 from modules.models import DBConnection
 
 class StudentsRecordsModel:
-    @staticmethod
-    def getProgramCodes(organization_code :str):
-        connection = DBConnection.get_connection()
-        with connection.cursor() as cursor:
-            try:
-                fetch_query = "SELECT `code` FROM `programs` WHERE `organization_code` = %s ORDER BY `code` ASC;"
-                cursor.execute(fetch_query, (organization_code,))
-                return cursor.fetchall()
-            except Exception as e:
-                connection.rollback()  # Rollback in case of error
-                raise e
-            finally:
-                cursor.close()  # Ensure the cursor is closed
-
     @staticmethod
     def getStudents():
         connection = DBConnection.get_connection()

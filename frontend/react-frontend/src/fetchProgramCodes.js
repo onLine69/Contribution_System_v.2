@@ -1,6 +1,6 @@
 export default async function fetchProgramCodes(setProgramCodes) {
     try {
-        const response = await fetch("http://127.0.0.1:5000/student-records/program-codes/CCS-EC", 
+        const response = await fetch("http://127.0.0.1:5000/program-codes/CCS-EC", 
             { method: "GET" }
         );
         
