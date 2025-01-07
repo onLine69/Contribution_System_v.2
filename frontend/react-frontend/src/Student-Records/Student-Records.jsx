@@ -90,7 +90,7 @@ export default function StudentRecords() {
           type="file"
           accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
           onChange={(e) => {
-            bulkAddStudents(e, fetchStudents);
+            bulkAddStudents(e).then(() => fetchStudents(setStudents, setError));
           }}
         />
       </div>
@@ -98,17 +98,17 @@ export default function StudentRecords() {
   );
 
   const filteredStudents = students
-    .filter((student) => student[columnSearch].includes(paramSearch)) // Filter first
-    .sort((a, b) => {
-      // Sorting priority: program_code, then year_level, then full_name
-      if (a.program_code < b.program_code) return -1;
-      if (a.program_code > b.program_code) return 1;
-      if (a.year_level < b.year_level) return -1;
-      if (a.year_level > b.year_level) return 1;
-      if (a.full_name < b.full_name) return -1;
-      if (a.full_name > b.full_name) return 1;
-      return 0;
-    });
+                          .filter((student) => student[columnSearch].includes(paramSearch)) // Filter first
+                          .sort((a, b) => {
+                            // Sorting priority: program_code, then year_level, then full_name
+                            if (a.program_code < b.program_code) return -1;
+                            if (a.program_code > b.program_code) return 1;
+                            if (a.year_level < b.year_level) return -1;
+                            if (a.year_level > b.year_level) return 1;
+                            if (a.full_name < b.full_name) return -1;
+                            if (a.full_name > b.full_name) return 1;
+                            return 0;
+                          });
 
   return (
     <>

@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2'
 
-export default async function bulkAddStudents(e, fetchStudents) {
+export default async function bulkAddStudents(e) {
     const fileInput = e.target;
     const file = fileInput.files[0]; // Get the selected file
 
@@ -37,7 +37,6 @@ export default async function bulkAddStudents(e, fetchStudents) {
             })
         } finally {
             fileInput.value = ""; // Clear the file input after the process is complete
-            fetchStudents();
         }
     }
 };

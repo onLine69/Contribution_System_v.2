@@ -44,7 +44,6 @@ class ThisAppModel:
                 """
                 
                 cursor.execute(search_query, (organization_code, academic_year))
-                print(search_query, organization_code, academic_year)
                 return cursor.fetchall()
             except Exception as e:
                 connection.rollback()  # Rollback in case of error

@@ -2,29 +2,23 @@ from modules.models import DBConnection
 
 class PaymentRecordsModel:
     @staticmethod
-    def getPaymentRecords(item_name, academic_year, student_status, program_code, year_level):
+    def getPaymentRecords(item_name :str, academic_year :str, organization_code :str):
         connection = DBConnection.get_connection()
         with connection.cursor() as cursor:
             try:
                 # Get the students
                 fetch_students_query = """
-                    SELECT `full_name`, `id_number` 
-                    FROM `students` 
-                    WHERE 1=1
+                    SELECT `full_name`, `id_number`, `program_code`, `year_level`
+                    FROM `students` AS `s`
+                    LEFT JOIN `programs` AS `p` 
+                    ON `s`.`program_code` = `p`.`code` 
+                    LEFT JOIN `organizations` AS `o` 
+                    ON `p`.`organization_code` = `o`.`code`
+                    WHERE `o`.`code` = %s 
+                    ORDER BY `program_code` ASC, `year_level` ASC, `full_name` ASC;
                 """
-                fetch_students_params = []
-
-                if program_code:
-                    fetch_students_query += " AND `program_code` = %s"
-                    fetch_students_params.append(program_code)
-
-                if year_level:
-                    fetch_students_query += " AND `year_level` = %s"
-                    fetch_students_params.append(year_level)
-
-                fetch_students_query += " ORDER BY `program_code` ASC, `year_level` ASC, `full_name` ASC;"
                 
-                cursor.execute(fetch_students_query, tuple(fetch_students_params))
+                cursor.execute(fetch_students_query, (organization_code,))
                 student_list = cursor.fetchall()
 
                 # Get the price/amount of the item
@@ -74,11 +68,10 @@ class PaymentRecordsModel:
                         else:
                             status = "Unpaid"  # Default to "Unpaid" if no transactions are found
 
-                    # Append the balance and status to the student tuple based on the desired status
-                    if student_status == "All" or status == student_status:
-                        student['balance'] = balance
-                        student['status'] = status
-                        updated_students.append(student)
+                
+                    student['balance'] = balance
+                    student['status'] = status
+                    updated_students.append(student)
 
                 return updated_students
             except Exception as e:
@@ -89,7 +82,7 @@ class PaymentRecordsModel:
                 cursor.close()  # Ensure the cursor is closed
     
     @staticmethod
-    def fetchPaid(contribution_name :str, year_level :str, program_code :str, academic_year :str):
+    def fetchPaid(contribution_name :str, academic_year :str):
         connection = DBConnection.get_connection()
         with connection.cursor() as cursor:
             try:
@@ -100,22 +93,10 @@ class PaymentRecordsModel:
                     WHERE `t`.`contribution_name` = %s
                     AND `t`.`contribution_ay` = %s
                     AND (YEAR(`t`.`datetime`) >= %s AND YEAR(`t`.`datetime`) <= %s) 
-                    AND `t`.`status` = "Accepted"
+                    AND `t`.`status` = "Accepted";
                 """
-                
-                fetch_params = [contribution_name, academic_year, int(years[0]), int(years[1])]
-
-                if year_level:
-                    fetch_query += " AND `s`.`year_level` = %s"
-                    fetch_params.append(year_level)
-
-                if program_code:
-                    fetch_query += " AND `s`.`program_code` = %s"
-                    fetch_params.append(program_code)
-
-                fetch_query += ";"
-
-                cursor.execute(fetch_query, tuple(fetch_params))
+        
+                cursor.execute(fetch_query, (contribution_name, academic_year, int(years[0]), int(years[1])))
                 
                 return cursor.fetchone()['paid']
             except Exception as e:
@@ -125,32 +106,22 @@ class PaymentRecordsModel:
                 cursor.close()  # Ensure the cursor is closed
 
     @staticmethod
-    def fetchUnpaid(year_level :str, program_code :str, paid_count : int):
+    def fetchUnpaid(paid_count : int, organization_code :str):
         connection = DBConnection.get_connection()
         with connection.cursor() as cursor:
             try:
                 fetch_query =   """
-                    SELECT COUNT(*) AS paid FROM `students` WHERE 1 = 1
+                    SELECT COUNT(*) AS `all` FROM `students` AS `s`
+                    LEFT JOIN `programs` AS `p` 
+                    ON `s`.`program_code` = `p`.`code` 
+                    LEFT JOIN `organizations` AS `o` 
+                    ON `p`.`organization_code` = `o`.`code`
+                    WHERE `o`.`code` = %s;
                 """
-                
-                fetch_params =[]
 
-                if year_level:
-                    fetch_query += " AND `year_level` = %s"
-                    fetch_params.append(year_level)
+                cursor.execute(fetch_query, (organization_code,))
                 
-                if program_code:
-                    fetch_query += " AND `program_code` = %s"
-                    fetch_params.append(program_code)
-                
-                fetch_query += ";"
-
-                if len(fetch_params) > 0:
-                    cursor.execute(fetch_query, tuple(fetch_params))
-                else:
-                    cursor.execute(fetch_query)
-                
-                return cursor.fetchone()['paid'] - paid_count
+                return cursor.fetchone()['all'] - paid_count
             except Exception as e:
                 connection.rollback()  # Rollback in case of error
                 raise e

@@ -1,8 +1,86 @@
-.Payment-Records {
+#payment-records-actions{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    height: 50px;
+    padding: 10px;
+    margin: 0 50px;
+    border-radius: 40px;
+    background: rgba(59, 70, 171, 0.30);
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+#search-payment-form{
+    width: 70%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    margin-right: 20px;
+}
+
+#transact-payments{
+    cursor: pointer;
+    color: #3B46AB;
+    text-align: center;
+    border-radius: 5px;
+    border: 3px solid #3B46AB;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    height: 30px;
+    width: 100px;
+}
+
+.card {
+    padding: 1rem; 
+    border: 1px solid #ccc; 
+    border-radius: 8px; 
+    display: flex; 
+    flex-flow: column wrap;
+    width: 25%;
+    height: 200px;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    background-color: red;
+}
+
+.card-title {
+    text-align: center;
+    margin: auto auto 15px auto;
+}
+
+.filter-selection{
+    margin: auto auto 10px auto;
+    width: 80%;
+    height: 30px;
+    border-radius: 8px;
+}
+
+.stat-block {
+    display: flex;
+    flex-flow: row wrap;
+    background-color: #fff;
+    width: 50%;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.stat-block-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60%;
+}
+
+.stat-block-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
 }

@@ -106,7 +106,6 @@ class StudentsRecordsModel:
 
                     # Execute the insert statement
                     cursor.execute(insert_statement, student)
-                    print(student)
                     # Commit the transaction after all inserts
                     connection.commit()
             except Exception as e:
