@@ -1,11 +1,13 @@
 export default function TableHeader() {
     return (
         <thead>
-            <th scope="col"><input type="checkbox" id="transact-all" onClick={(e)=>{selectAllStudents(e.target.checked)}}/></th>
-            <th scope="col">Name</th>
-            <th scope="col">ID Number</th>
-            <th scope="col">Balance</th>
-            <th scope="col">Status</th>
+            <tr>
+                <th scope="col"><input type="checkbox" id="transact-all" onClick={(e)=>{selectAllStudents(e.target.checked)}}/></th>
+                <th scope="col">Name</th>
+                <th scope="col">ID Number</th>
+                <th scope="col">Balance</th>
+                <th scope="col">Status</th>
+            </tr>
         </thead>
     );
 }

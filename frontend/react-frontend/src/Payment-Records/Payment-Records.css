@@ -44,19 +44,21 @@
     border-radius: 8px; 
     display: flex; 
     flex-flow: column wrap;
-    width: 25%;
-    height: 200px;
+    width: 23%;
+    height: 250px;
     align-items: center;
     justify-content: center;
 }
 
 .card-title {
+    display: flex;
+    align-items: center;
     text-align: center;
-    margin: auto auto 15px auto;
+    margin: 15px auto;
 }
 
 .filter-selection{
-    margin: auto auto 10px auto;
+    margin: 10px auto;
     width: 80%;
     height: 30px;
     border-radius: 8px;
@@ -66,9 +68,10 @@
     display: flex;
     flex-flow: row wrap;
     background-color: #fff;
-    width: 50%;
+    width: 70%;
     align-items: center;
     justify-content: space-around;
+    margin: 10px auto;
 }
 
 .stat-block-label {

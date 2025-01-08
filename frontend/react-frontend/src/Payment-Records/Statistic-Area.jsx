@@ -1,5 +1,4 @@
 export default function StatisticsArea({filteredStatus, contributions, choosenContribution, stat}) {    
-    console.log("Chosen:", choosenContribution.selectedContribution);
     const contributionSelector = (
         <div id="contribution-info" className="card">
             <h3 className="card-title">Select Contribution</h3>

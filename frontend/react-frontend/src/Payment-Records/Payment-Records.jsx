@@ -3,6 +3,7 @@ import TableHeader from "./Table-Header.jsx";
 import TableRow from "./Table-Row.jsx";
 import FilterArea from "./FIlter-Area.jsx";
 import StatisticsArea from "./Statistic-Area.jsx";
+import PaymentFormModal from "./Payment-Form-Modal.jsx";
 import "./Payment-Records.css";
 
 import fetchProgramCodes from "../fetchProgramCodes.js";
@@ -19,7 +20,18 @@ export default function PaymentRecords() {
   const [selectedPCode, setSelectedPCode] = useState("All");
   const [selectedYear, setSelectedYear] = useState("0");
   const [selectedStatus, setSelectedStatus] = useState("All");
+  // State to control modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Function to show the modal
+  const showModal = () => {
+    setIsModalOpen(true); // Set state to open the modal
+  };
+
+  // Function to hide the modal
+  const hideModal = () => {
+    setIsModalOpen(false); // Set state to close the modal
+  };
 
   // TODO: Fix the default fetch request for contribution and the statistics for searching individual programs and/or year levels 
   const fetchPayments = (s_contribution) => {
@@ -60,6 +72,32 @@ export default function PaymentRecords() {
     fetchPayments(selectedContribution?.name || 'default');
   }, []);
 
+  const [paymentTransactions, setPaymentTransactions] = useState({});
+  const transactPayments = () => {
+    const toBeTransact = document.querySelectorAll('input[name="transact-student"]:checked');
+    const transactionList = [];
+    toBeTransact.forEach((transact) => {
+      const row = transact.closest('tr');
+      const studentId = row.querySelector('td:nth-child(3)').textContent; // Get Student ID
+      const studentName = row.querySelector('td:nth-child(2)').textContent; // Get Student Name
+      const studentNote = "";
+
+      const transactionInfo = {
+        "student_id": studentId,
+        "student_name": studentName,
+        "student_note": studentNote
+      }
+
+      transactionList.push(transactionInfo);
+    });
+
+    const transactionsInfo = {
+      "total_value": selectedContribution.amount * transactionList.length,
+      "transactions": transactionList,
+      setPaymentTransactions: setPaymentTransactions
+    };
+    setPaymentTransactions(transactionsInfo);
+  }
   const operationArea = (
     <div
       style={{
@@ -90,9 +128,8 @@ export default function PaymentRecords() {
           />
         </div>
         <div>
-          <button id="transact-payments" title="Transact Selected Records">
-            {" "}
-            Transact{" "}
+          <button id="transact-payments" title="Transact Selected Records" onClick={() => {transactPayments(); showModal();}}>
+            Transact
           </button>
         </div>
       </div>
@@ -121,8 +158,8 @@ export default function PaymentRecords() {
 
     const filterArea = (
       <div style={{
-        width: "100%",
-        margin: "0px 0px",
+        width: "90%",
+        margin: "0px auto",
         height: "300px",
         backgroundColor: "#F4F5FF",
         position: "sticky",
@@ -132,7 +169,6 @@ export default function PaymentRecords() {
         flexDirection: "row",
         justifyContent: "space-around",
         alignItems: "center",
-
       }}>
         <FilterArea programCodes={programCodes} 
           controls={{
@@ -153,6 +189,7 @@ export default function PaymentRecords() {
     <div>
       {filterArea}
       {operationArea}
+      {isModalOpen && <PaymentFormModal paymentsInfo={paymentTransactions} isOpen={isModalOpen} closeModal={hideModal} />}
       <table>
         <TableHeader />
         <tbody>
