@@ -1,32 +1,48 @@
-import { useState, useEffect } from "react";
 import Swal from 'sweetalert2'
 
-export default function PaymentFormModal({paymentsInfo, isOpen, closeModal}){
+export default function PaymentFormModal({paymentsInfo, isOpen, closeModal, fetchPayments}){
     const transactPayments = async () => {
-        const response = await fetch("http://127.0.0.1:5000/payment-records/transact-payments", 
-            {
-                method: "POST",
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(paymentsInfo.transactions)
-            }
-        );
 
-        if (!response.ok){
-            const promiseResult = await response.json();
-            Swal.fire({
-                title: "Error",
-                text: promiseResult.message,
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        } else {
-            Swal.fire({
-                title: "Success",
-                text: `Transactions Successfully Recorded.`,
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });
+      Swal.fire({
+        title: "Do you want to record these payments?",
+        text: "Once recorded, it cannot be undone.",
+        showCancelButton: true,
+        confirmButtonText: "Record",
+        cancelButtonText: `Don't record`
+      }).then(async (result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          const response = await fetch("http://127.0.0.1:5000/payment-records/transact-payments", 
+              {
+                  method: "POST",
+                  headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify(paymentsInfo)
+              }
+          );
+
+          if (!response.ok){
+              const promiseResult = await response.json();
+              Swal.fire({
+                  title: "Error",
+                  text: promiseResult.message,
+                  icon: 'error',
+                  confirmButtonText: 'OK'
+              }).then(() => {
+                fetchPayments(paymentsInfo.name);
+              });
+          } else {
+              Swal.fire({
+                  title: "Success",
+                  text: `Transactions Successfully Recorded.`,
+                  icon: 'success',
+                  confirmButtonText: 'OK'
+              }).then(() => {
+                closeModal();
+                fetchPayments(paymentsInfo.name);
+              });
+          }
         }
+      });
     };
     
     // Overlay component
@@ -60,7 +76,8 @@ export default function PaymentFormModal({paymentsInfo, isOpen, closeModal}){
           >
             Transact Payments
           </h1>
-          <h2>Total Amount: {paymentsInfo.total_value}</h2>
+          <h2 className='form-title'>Name: {paymentsInfo.name}</h2>
+          <h2 className='form-title'>Total Amount: {paymentsInfo.total_value}</h2>
           <div
             style={{
               maxHeight: "50vh", // Set height limit for table wrapper
@@ -70,19 +87,20 @@ export default function PaymentFormModal({paymentsInfo, isOpen, closeModal}){
           >
             <table
               style={{
-                width: "100%",
+                width: "90%",
+                margin: "20px auto",
                 borderCollapse: "collapse", // Merge table borders
               }}
             >
               <thead>
                 <tr>
-                  <th scope="col" style={{ padding: "10px", border: "1px solid #ccc" }}>
+                  <th scope="col" className='modal-table-header'>
                     ID Number
                   </th>
-                  <th scope="col" style={{ padding: "10px", border: "1px solid #ccc" }}>
+                  <th scope="col" className='modal-table-header'>
                     Name
                   </th>
-                  <th scope="col" style={{ padding: "10px", border: "1px solid #ccc" }}>
+                  <th scope="col" className='modal-table-header'>
                     Note
                   </th>
                 </tr>
@@ -91,31 +109,31 @@ export default function PaymentFormModal({paymentsInfo, isOpen, closeModal}){
                 {paymentsInfo.transactions.map((transactionInfo, index) => {
                   return (
                     <tr key={index}>
-                      <td style={{ border: "1px solid #ccc" }}>
+                      <td className='modal-table-cell'>
                         <input type="text" name="student-id" value={transactionInfo.student_id} className="form-control" readOnly/>
                       </td>
-                      <td style={{ border: "1px solid #ccc" }}>
+                      <td className='modal-table-cell'>
                         <input type="text" name="student_name" value={transactionInfo.student_name} className="form-control" readOnly/>
                       </td>
-                      <td style={{ border: "1px solid #ccc" }}>
-                      <input
-                        type="text"
-                        name="transaction-message"
-                        data-number={index}
-                        value={transactionInfo.student_note}
-                        className="form-control"
-                        maxLength="255"
-                        onChange={(e) => {
-                        const key = e.target.getAttribute("data-number"); // Get the key (index) from data-number
-                        const value = e.target.value; // Get the input value
+                      <td className='modal-table-cell'>
+                        <textarea name="transaction-message" id="transaction-message"
+                          data-number={index}
+                          value={transactionInfo.student_note}
+                          className="form-control"
+                          maxLength="255"
+                          onChange={(e) => {
+                          const key = e.target.getAttribute("data-number"); // Get the key (index) from data-number
+                          const value = e.target.value; // Get the input value
 
-                        paymentsInfo.setPaymentTransactions((prev) => {
-                            const updatedTransactions = [...prev.transactions];
-                            updatedTransactions[key].student_note = value; // Update the specific student_note
-                            return { ...prev, transactions: updatedTransactions };
-                        });
-                        }}
-                    />
+                          paymentsInfo.setPaymentTransactions((prev) => {
+                              const updatedTransactions = [...prev.transactions];
+                              updatedTransactions[key].student_note = value; // Update the specific student_note
+                              return { ...prev, transactions: updatedTransactions };
+                          });
+                          }}
+                        >
+                          {transactionInfo.student_note}
+                        </textarea>
                       </td>
                     </tr>
                   );
@@ -123,13 +141,13 @@ export default function PaymentFormModal({paymentsInfo, isOpen, closeModal}){
               </tbody>
             </table>
           </div>
-          <div>
-                <button onClick={transactPayments}>
-                    OK
-                </button>
-                <button onClick={closeModal}>
-                    Close
-                </button>
+          <div className='button-area'>
+            <button onClick={transactPayments} id='ok-button'>
+                      OK
+                  </button>
+            <button onClick={closeModal} id='cancel-button'>
+                Close
+            </button>
             </div>
         </div>
       );

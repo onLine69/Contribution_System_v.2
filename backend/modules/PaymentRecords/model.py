@@ -129,7 +129,7 @@ class PaymentRecordsModel:
                 cursor.close()  # Ensure the cursor is closed
 
     @staticmethod
-    def createTransaction(name, acad_year, amount, payer_ids, transaction_messages):
+    def createTransaction(name :str, acad_year :str, amount :str, transactions :str):
         connection = DBConnection.get_connection()
         with connection.cursor() as cursor:
             try:
@@ -138,8 +138,9 @@ class PaymentRecordsModel:
                     VALUES (%s, %s, %s, "Cash", %s, %s, "Pending");
                 """
                 
-                for n in range(0, len(payer_ids)):
-                    cursor.execute(transact_query, (name, acad_year, payer_ids[n], amount, transaction_messages[n]))
+                for n in range(0, len(transactions)):
+                    print((name, acad_year, transactions[n]['student_id'], amount, transactions[n]['student_note']))
+                    cursor.execute(transact_query, (name, acad_year, transactions[n]['student_id'], amount, transactions[n]['student_note']))
                     connection.commit()
                 
             except Exception as e:

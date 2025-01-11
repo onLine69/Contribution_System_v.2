@@ -120,9 +120,6 @@ export default function StudentFormModal({ purpose, student, isOpen , closeModal
                 </div>
 
                 <div className="form-group" style={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
-                    <button type="button" onClick={closeModal} style={{ padding: "10px 20px", backgroundColor: "#f44336", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}>
-                        Close
-                    </button>
                     <button type="button" className={purpose} style={{ padding: "10px 20px", borderRadius: "4px", cursor: "pointer" }}
                     onClick={async () => {
                         if (purpose === "Edit"){formData.original_id = student?.id_number} 
@@ -146,6 +143,9 @@ export default function StudentFormModal({ purpose, student, isOpen , closeModal
                     }}
                     >
                         { purpose }
+                    </button>
+                    <button type="button" onClick={closeModal} style={{ padding: "10px 20px", backgroundColor: "#f44336", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}>
+                        Close
                     </button>
                 </div>
             </div>

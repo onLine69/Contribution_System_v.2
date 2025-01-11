@@ -67,7 +67,6 @@
 .stat-block {
     display: flex;
     flex-flow: row wrap;
-    background-color: #fff;
     width: 70%;
     align-items: center;
     justify-content: space-around;
@@ -83,7 +82,67 @@
 
 .stat-block-info {
     display: flex;
-    align-items: center;
+    align-items: center; 
     justify-content: center;
     width: 40%;
+}
+
+/* For the Modal */
+.modal-table-header{
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.modal-table-cell{
+    border: 1px solid #ccc;
+}
+
+.form-title {
+    font-size: medium;
+    margin: 5px 20px;
+}
+
+.form-control {
+    width: 90%;
+    height: 90%;
+    padding: 15px 10px;
+    font-size: small;
+}
+
+#transaction-message {
+    resize: none;
+    overflow: auto;
+    width: 90%;
+    height: 85%;
+}
+
+.form-control:read-only {
+    opacity: 90%;
+    border: #ccc 1px solid;
+}
+
+.button-area {
+    width: 70%;
+    margin: 0px auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#ok-button {
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+#cancel-button {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
 }

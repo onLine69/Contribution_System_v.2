@@ -5,6 +5,7 @@ import FilterArea from "./FIlter-Area.jsx";
 import StatisticsArea from "./Statistic-Area.jsx";
 import PaymentFormModal from "./Payment-Form-Modal.jsx";
 import "./Payment-Records.css";
+import Swal from 'sweetalert2'
 
 import fetchProgramCodes from "../fetchProgramCodes.js";
 
@@ -33,12 +34,23 @@ export default function PaymentRecords() {
     setIsModalOpen(false); // Set state to close the modal
   };
 
+
+
   // TODO: Fix the default fetch request for contribution and the statistics for searching individual programs and/or year levels 
   const fetchPayments = (s_contribution) => {
+    const restoreChecked = () => {
+      const checkedBoxes = document.querySelectorAll('input[name="transact-student"]:checked');
+      const checkAll = document.getElementById("transact-all");
+
+      checkAll.checked = false;
+      checkedBoxes.forEach((checkedBox) => {
+        checkedBox.checked = false;  
+      })
+    }
+
     fetch(`http://127.0.0.1:5000/payment-records/get-records/CCS-EC/${s_contribution}`, {
       method: "GET",
-    })
-      .then((response) => {
+    }).then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -55,6 +67,7 @@ export default function PaymentRecords() {
         }));
   
         // Update states
+        restoreChecked();
         setContributions(data['contributions']);
         setSelectedContribution(data['chosen_contribution']);
         setStat(data['stat']);
@@ -74,29 +87,43 @@ export default function PaymentRecords() {
 
   const [paymentTransactions, setPaymentTransactions] = useState({});
   const transactPayments = () => {
-    const toBeTransact = document.querySelectorAll('input[name="transact-student"]:checked');
-    const transactionList = [];
-    toBeTransact.forEach((transact) => {
-      const row = transact.closest('tr');
-      const studentId = row.querySelector('td:nth-child(3)').textContent; // Get Student ID
-      const studentName = row.querySelector('td:nth-child(2)').textContent; // Get Student Name
-      const studentNote = "";
+    const toBeTransact = Array.from(document.querySelectorAll('input[name="transact-student"]:checked'))
+    .filter(transact => !transact.disabled); // Filter out disabled checkboxes
 
-      const transactionInfo = {
-        "student_id": studentId,
-        "student_name": studentName,
-        "student_note": studentNote
-      }
+    if (toBeTransact.length > 0){
+      const transactionList = [];
+      toBeTransact.forEach((transact) => {
+        const row = transact.closest('tr');
+        const studentId = row.querySelector('td:nth-child(3)').textContent; // Get Student ID
+        const studentName = row.querySelector('td:nth-child(2)').textContent; // Get Student Name
+        const studentNote = "";
 
-      transactionList.push(transactionInfo);
-    });
+        const transactionInfo = {
+          "student_id": studentId,
+          "student_name": studentName,
+          "student_note": studentNote
+        }
 
-    const transactionsInfo = {
-      "total_value": selectedContribution.amount * transactionList.length,
-      "transactions": transactionList,
-      setPaymentTransactions: setPaymentTransactions
-    };
-    setPaymentTransactions(transactionsInfo);
+        transactionList.push(transactionInfo);
+      });
+
+      const transactionsInfo = {
+        "name": selectedContribution.name,
+        "amount": selectedContribution.amount,
+        "total_value": selectedContribution.amount * transactionList.length,
+        "transactions": transactionList,
+        setPaymentTransactions: setPaymentTransactions
+      };
+      setPaymentTransactions(transactionsInfo);
+      showModal();
+    } else {
+      Swal.fire({
+          title: "No Record Selected.",
+          text: `Please select a record/s to be transacted.`,
+          icon: 'warning',
+          confirmButtonText: 'OK'
+      });
+    }
   }
   const operationArea = (
     <div
@@ -128,7 +155,7 @@ export default function PaymentRecords() {
           />
         </div>
         <div>
-          <button id="transact-payments" title="Transact Selected Records" onClick={() => {transactPayments(); showModal();}}>
+          <button id="transact-payments" title="Transact Selected Records" onClick={transactPayments}>
             Transact
           </button>
         </div>
@@ -189,7 +216,7 @@ export default function PaymentRecords() {
     <div>
       {filterArea}
       {operationArea}
-      {isModalOpen && <PaymentFormModal paymentsInfo={paymentTransactions} isOpen={isModalOpen} closeModal={hideModal} />}
+      {isModalOpen && <PaymentFormModal paymentsInfo={paymentTransactions} isOpen={isModalOpen} closeModal={hideModal} fetchPayments = {fetchPayments}/>}
       <table>
         <TableHeader />
         <tbody>

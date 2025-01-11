@@ -38,8 +38,9 @@ def transactPayments():
     try:
         req = request.get_json()
         print(req)
+        PaymentRecordsModel.createTransaction(req['name'], ACADEMIC_YEAR, req['amount'], req['transactions'])
 
-        return make_response(jsonify({'message': "Payments Transacted Sucessfully"}), 201)
+        return make_response(jsonify({'message': "Payments Transacted Sucessfully."}), 201)
     except Exception as e:
         print("Error:", e)
         return make_response(jsonify({'message': str(e)}), 400)
