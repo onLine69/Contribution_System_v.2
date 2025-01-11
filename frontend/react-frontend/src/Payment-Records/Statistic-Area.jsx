@@ -1,8 +1,8 @@
-export default function StatisticsArea({filteredStatus, contributions, choosenContribution, stat}) {    
+export default function StatisticsArea({filteredStatus, contributions, choosenContribution, stat, setters}) {   
     const contributionSelector = (
         <div id="contribution-info" className="card">
             <h3 className="card-title">Select Contribution</h3>
-            <select name="selected-contribution" id="selected-contribution" className="filter-selection" onChange={(e) => { choosenContribution.fetchPayments(e.target.value) }}>
+            <select name="selected-contribution" id="selected-contribution" className="filter-selection" onChange={(e) => { choosenContribution.fetchPayments(e.target.value, setters) }}>
                 {contributions.map((contribution, index) => {
                     return <option key={index} value={contribution.name}>{contribution.name}</option>;
                 })}
@@ -22,7 +22,6 @@ export default function StatisticsArea({filteredStatus, contributions, choosenCo
             </div>
         </div>
     );
-    
     
     const statisticsRecords = (
         <div id="stat-records" className="card">

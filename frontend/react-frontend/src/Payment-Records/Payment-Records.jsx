@@ -1,147 +1,71 @@
 import { useState, useEffect } from "react";
+
 import TableHeader from "./Table-Header.jsx";
 import TableRow from "./Table-Row.jsx";
 import FilterArea from "./FIlter-Area.jsx";
 import StatisticsArea from "./Statistic-Area.jsx";
 import PaymentFormModal from "./Payment-Form-Modal.jsx";
-import "./Payment-Records.css";
-import Swal from 'sweetalert2'
 
 import fetchProgramCodes from "../fetchProgramCodes.js";
+import fetchPayments from "./requests/fetchPayments.js";
+import transactPayments from "./requests/transactPayments.js";
+
+import "./Payment-Records.css";
 
 export default function PaymentRecords() {
-  const [columnSearch, setColumnSearch] = useState("full_name");
-  const [paramSearch, setParamSearch] = useState("");
+  const [searchParams, setSearchParams] = useState({
+    column: "full_name",
+    input: "",
+  });
+  const [filterParams, setFilterParams] = useState({
+    programFilter: "All",
+    yearFilter: "0",
+    statusFilter: "All",
+  });
   const [payments, setPayments] = useState([]);
   const [error, setError] = useState(null);
   const [programCodes, setProgramCodes] = useState([]);
   const [contributions, setContributions] = useState([]);
   const [selectedContribution, setSelectedContribution] = useState({});
   const [stat, setStat] = useState({});
-  const [selectedPCode, setSelectedPCode] = useState("All");
-  const [selectedYear, setSelectedYear] = useState("0");
-  const [selectedStatus, setSelectedStatus] = useState("All");
-  // State to control modal visibility
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [paymentTransactions, setPaymentTransactions] = useState({});
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // Function to show the modal
   const showModal = () => {
     setIsModalOpen(true); // Set state to open the modal
   };
-
   // Function to hide the modal
   const hideModal = () => {
     setIsModalOpen(false); // Set state to close the modal
   };
 
-
-
-  // TODO: Fix the default fetch request for contribution and the statistics for searching individual programs and/or year levels 
-  const fetchPayments = (s_contribution) => {
-    const restoreChecked = () => {
-      const checkedBoxes = document.querySelectorAll('input[name="transact-student"]:checked');
-      const checkAll = document.getElementById("transact-all");
-
-      checkAll.checked = false;
-      checkedBoxes.forEach((checkedBox) => {
-        checkedBox.checked = false;  
-      })
-    }
-
-    fetch(`http://127.0.0.1:5000/payment-records/get-records/CCS-EC/${s_contribution}`, {
-      method: "GET",
-    }).then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.text(); // Return the text response
-      })
-      .then((text) => {
-        const data = JSON.parse(text); // Parse JSON
-        console.log(data);
-  
-        // Map and update students data
-        const updatedData = data["students"].map((element, index) => ({
-          ...element,
-          number: index,
-        }));
-  
-        // Update states
-        restoreChecked();
-        setContributions(data['contributions']);
-        setSelectedContribution(data['chosen_contribution']);
-        setStat(data['stat']);
-        setPayments(updatedData);
-      })
-      .catch((error) => {
-        console.error("There was a problem with the fetch operation:", error);
-        setError(error); // Handle errors
-      });
+  const setters = {
+    setPayments: setPayments,
+    setError: setError,
+    setContributions: setContributions,
+    setSelectedContribution: setSelectedContribution,
+    setStat: setStat,
   };
-  
 
   useEffect(() => {
     fetchProgramCodes(setProgramCodes);
-    fetchPayments(selectedContribution?.name || 'default');
+    fetchPayments(selectedContribution?.name || "default", setters);
   }, []);
 
-  const [paymentTransactions, setPaymentTransactions] = useState({});
-  const transactPayments = () => {
-    const toBeTransact = Array.from(document.querySelectorAll('input[name="transact-student"]:checked'))
-    .filter(transact => !transact.disabled); // Filter out disabled checkboxes
-
-    if (toBeTransact.length > 0){
-      const transactionList = [];
-      toBeTransact.forEach((transact) => {
-        const row = transact.closest('tr');
-        const studentId = row.querySelector('td:nth-child(3)').textContent; // Get Student ID
-        const studentName = row.querySelector('td:nth-child(2)').textContent; // Get Student Name
-        const studentNote = "";
-
-        const transactionInfo = {
-          "student_id": studentId,
-          "student_name": studentName,
-          "student_note": studentNote
-        }
-
-        transactionList.push(transactionInfo);
-      });
-
-      const transactionsInfo = {
-        "name": selectedContribution.name,
-        "amount": selectedContribution.amount,
-        "total_value": selectedContribution.amount * transactionList.length,
-        "transactions": transactionList,
-        setPaymentTransactions: setPaymentTransactions
-      };
-      setPaymentTransactions(transactionsInfo);
-      showModal();
-    } else {
-      Swal.fire({
-          title: "No Record Selected.",
-          text: `Please select a record/s to be transacted.`,
-          icon: 'warning',
-          confirmButtonText: 'OK'
-      });
-    }
-  }
   const operationArea = (
-    <div
-      style={{
-        width: "100%",
-        backgroundColor: "#F4F5FF",
-        position: "sticky",
-        top: "400px",
-        zIndex: "1000",
-      }}
-    >
+    <div id="operation-area">
       <div id="payment-records-actions">
         <div id="search-payment-form">
           <select
             name="column-search"
             id="column-search"
-            value={columnSearch}
-            onChange={(e) => setColumnSearch(e.target.value)}
+            value={searchParams.column}
+            onChange={(e) =>
+              setSearchParams((param) => {
+                return { ...param, column: e.target.value };
+              })
+            }
           >
             <option value="full_name">Name</option>
             <option value="id_number">ID Number</option>
@@ -150,12 +74,26 @@ export default function PaymentRecords() {
             type="text"
             id="param-search"
             placeholder="Search Payment Info Info Here..."
-            value={paramSearch}
-            onChange={(e) => setParamSearch(e.target.value)}
+            value={searchParams.input}
+            onChange={(e) =>
+              setSearchParams((param) => {
+                return { ...param, input: e.target.value };
+              })
+            }
           />
         </div>
         <div>
-          <button id="transact-payments" title="Transact Selected Records" onClick={transactPayments}>
+          <button
+            id="transact-payments"
+            title="Transact Selected Records"
+            onClick={() => {
+              transactPayments(
+                setPaymentTransactions,
+                selectedContribution,
+                showModal
+              );
+            }}
+          >
             Transact
           </button>
         </div>
@@ -163,60 +101,41 @@ export default function PaymentRecords() {
     </div>
   );
 
-  const filteredPayments = payments
-    .filter((student) => {
-      return (
-        (selectedPCode === "All" || student["program_code"] === selectedPCode) &&
-        (selectedYear === "0" || student["year_level"] === selectedYear) &&
-        (selectedStatus === "All" || student["status"] === selectedStatus)
-      );
-    })
-    .filter((payment) => payment[columnSearch].includes(paramSearch)) // Filter first
-    .sort((a, b) => {
-      // Sorting priority: program_code, then year_level, then full_name
-      if (a.program_code < b.program_code) return -1;
-      if (a.program_code > b.program_code) return 1;
-      if (a.year_level < b.year_level) return -1;
-      if (a.year_level > b.year_level) return 1;
-      if (a.full_name < b.full_name) return -1;
-      if (a.full_name > b.full_name) return 1;
-      return 0;
-    });
+  const filteredPayments = filterPayments(payments, filterParams, searchParams);
 
-    const filterArea = (
-      <div style={{
-        width: "90%",
-        margin: "0px auto",
-        height: "300px",
-        backgroundColor: "#F4F5FF",
-        position: "sticky",
-        top: "100px",
-        zIndex: "1000",
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-around",
-        alignItems: "center",
-      }}>
-        <FilterArea programCodes={programCodes} 
-          controls={{
-            setSelectedPCode: setSelectedPCode,
-            setSelectedYear: setSelectedYear,
-            setSelectedStatus: setSelectedStatus,
-          }} />
-        <StatisticsArea filteredStatus={selectedStatus} contributions={contributions} 
+  const filterArea = (
+    <div id="filter-area">
+      <FilterArea
+        programCodes={programCodes}
+        setFilterParams={setFilterParams}
+      />
+
+      <StatisticsArea
+        filteredStatus={filterParams.statusFilter}
+        contributions={contributions}
         choosenContribution={{
           selectedContribution: selectedContribution,
-          fetchPayments: fetchPayments
-        }} 
-        stat={{...stat, payment_records_length: filteredPayments.length}} />
-      </div>
-    );
+          fetchPayments: fetchPayments,
+        }}
+        stat={{ ...stat, payment_records_length: filteredPayments.length }}
+        setters={setters}
+      />
+    </div>
+  );
 
   return (
     <div>
       {filterArea}
       {operationArea}
-      {isModalOpen && <PaymentFormModal paymentsInfo={paymentTransactions} isOpen={isModalOpen} closeModal={hideModal} fetchPayments = {fetchPayments}/>}
+      {isModalOpen && (
+        <PaymentFormModal
+          paymentsInfo={paymentTransactions}
+          isOpen={isModalOpen}
+          closeModal={hideModal}
+          fetchPayments={fetchPayments}
+          setters={setters}
+        />
+      )}
       <table>
         <TableHeader />
         <tbody>
@@ -238,8 +157,10 @@ export default function PaymentRecords() {
                   No payment record matches the parameters. &#123; '
                   {columnSearch}' has "{paramSearch}" &#125;
                   <br />
-                  Filters: {selectedPCode} &#40;Program&#41; | {selectedYear}{" "}
-                  &#40;Year Level&#41; | {selectedStatus} &#40;Status&#41;
+                  Filters: {filterParams.programFilter} &#40;Program&#41; |{" "}
+                  {filterParams.yearFilter}
+                  &#40;Year Level&#41; | {filterParams.statusFilter}{" "}
+                  &#40;Status&#41;
                 </td>
               ) : (
                 <td colSpan="8">
@@ -259,4 +180,31 @@ export default function PaymentRecords() {
       </table>
     </div>
   );
+}
+
+function filterPayments(payments, filterParams, searchParams) {
+  return payments
+    .filter((student) => {
+      return (
+        (filterParams.programFilter === "All" ||
+          student["program_code"] === filterParams.programFilter) &&
+        (filterParams.yearFilter === "0" ||
+          student["year_level"] === filterParams.yearFilter) &&
+        (filterParams.statusFilter === "All" ||
+          student["status"] === filterParams.statusFilter)
+      );
+    })
+    .filter((payment) =>
+      payment[searchParams.column].includes(searchParams.input)
+    ) // Filter first
+    .sort((a, b) => {
+      // Sorting priority: program_code, then year_level, then full_name
+      if (a.program_code < b.program_code) return -1;
+      if (a.program_code > b.program_code) return 1;
+      if (a.year_level < b.year_level) return -1;
+      if (a.year_level > b.year_level) return 1;
+      if (a.full_name < b.full_name) return -1;
+      if (a.full_name > b.full_name) return 1;
+      return 0;
+    });
 }

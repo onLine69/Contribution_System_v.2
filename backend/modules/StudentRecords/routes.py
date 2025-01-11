@@ -17,7 +17,7 @@ def bulkAdd():
     try:
         # Get the uploaded file
         file = request.files['file-upload']
-        print(file.filename)
+        print("Recieved: ", file.filename)
         # Call the adds function to insert the data
         StudentsRecordsModel.adds(file)
 

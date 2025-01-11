@@ -1,50 +1,6 @@
-import Swal from 'sweetalert2'
+import recordPayments from "./requests/recordPayments";
 
-export default function PaymentFormModal({paymentsInfo, isOpen, closeModal, fetchPayments}){
-    const transactPayments = async () => {
-
-      Swal.fire({
-        title: "Do you want to record these payments?",
-        text: "Once recorded, it cannot be undone.",
-        showCancelButton: true,
-        confirmButtonText: "Record",
-        cancelButtonText: `Don't record`
-      }).then(async (result) => {
-        /* Read more about isConfirmed, isDenied below */
-        if (result.isConfirmed) {
-          const response = await fetch("http://127.0.0.1:5000/payment-records/transact-payments", 
-              {
-                  method: "POST",
-                  headers: {'Content-Type': 'application/json'},
-                  body: JSON.stringify(paymentsInfo)
-              }
-          );
-
-          if (!response.ok){
-              const promiseResult = await response.json();
-              Swal.fire({
-                  title: "Error",
-                  text: promiseResult.message,
-                  icon: 'error',
-                  confirmButtonText: 'OK'
-              }).then(() => {
-                fetchPayments(paymentsInfo.name);
-              });
-          } else {
-              Swal.fire({
-                  title: "Success",
-                  text: `Transactions Successfully Recorded.`,
-                  icon: 'success',
-                  confirmButtonText: 'OK'
-              }).then(() => {
-                closeModal();
-                fetchPayments(paymentsInfo.name);
-              });
-          }
-        }
-      });
-    };
-    
+export default function PaymentFormModal({paymentsInfo, isOpen, closeModal, fetchPayments, setters}){
     // Overlay component
     const overlay = (
         <div className="overlay" onClick={closeModal}></div>
@@ -52,46 +8,13 @@ export default function PaymentFormModal({paymentsInfo, isOpen, closeModal, fetc
 
     // Modal content
     const modal = (
-        <div
-          className="modal"
-          style={{
-            width: "80%",
-            maxHeight: "70vh", // Set maximum height to 70% of viewport height
-            overflowY: "auto", // Enable vertical scrolling when content overflows
-            margin: "10px auto",
-            padding: "10px",
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-            backgroundColor: "#fff",
-          }}
-        >
-          <h1
-            style={{
-              width: "50%",
-              margin: "10px auto",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            Transact Payments
-          </h1>
-          <h2 className='form-title'>Name: {paymentsInfo.name}</h2>
-          <h2 className='form-title'>Total Amount: {paymentsInfo.total_value}</h2>
-          <div
-            style={{
-              maxHeight: "50vh", // Set height limit for table wrapper
-              overflowY: "auto", // Enable vertical scroll
-              overflowX: "auto", // Enable horizontal scroll if necessary
-            }}
-          >
-            <table
-              style={{
-                width: "90%",
-                margin: "20px auto",
-                borderCollapse: "collapse", // Merge table borders
-              }}
-            >
+        <div className="payment-modal">
+          <h1>Transact Payments</h1>
+          <p className='form-title'><b>Name: </b>{paymentsInfo.name}</p>
+          <p className='form-title'><b>Total Amount: </b>&#8369; {paymentsInfo.total_value}</p>
+
+          <div className="table-area">
+            <table>
               <thead>
                 <tr>
                   <th scope="col" className='modal-table-header'>
@@ -126,10 +49,10 @@ export default function PaymentFormModal({paymentsInfo, isOpen, closeModal, fetc
                           const value = e.target.value; // Get the input value
 
                           paymentsInfo.setPaymentTransactions((prev) => {
-                              const updatedTransactions = [...prev.transactions];
-                              updatedTransactions[key].student_note = value; // Update the specific student_note
-                              return { ...prev, transactions: updatedTransactions };
-                          });
+                                const updatedTransactions = [...prev.transactions];
+                                updatedTransactions[key].student_note = value; // Update the specific student_note
+                                return { ...prev, transactions: updatedTransactions };
+                            });
                           }}
                         >
                           {transactionInfo.student_note}
@@ -142,11 +65,13 @@ export default function PaymentFormModal({paymentsInfo, isOpen, closeModal, fetc
             </table>
           </div>
           <div className='button-area'>
-            <button onClick={transactPayments} id='ok-button'>
-                      OK
-                  </button>
-            <button onClick={closeModal} id='cancel-button'>
-                Close
+            <button id='ok-button' 
+              onClick={() => recordPayments(paymentsInfo, fetchPayments, setters, closeModal)} >
+                OK
+            </button>
+            <button id='cancel-button'
+              onClick={closeModal} >
+                Cancel
             </button>
             </div>
         </div>

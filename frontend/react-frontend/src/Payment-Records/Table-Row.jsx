@@ -1,7 +1,6 @@
 export default function TableRow({ payment }) {
 
   return (
-    <>
     <tr>
         <td>
             <input 
@@ -21,6 +20,5 @@ export default function TableRow({ payment }) {
         <td>{payment.balance}</td>
         <td>{payment.status}</td>
     </tr>
-    </>
   );
 }

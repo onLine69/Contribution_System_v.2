@@ -6,7 +6,7 @@ from config import ACADEMIC_YEAR
 
 
 @payment_records_bp.route('/get-records/<string:organization_code>/<string:name>', methods=["GET"])
-def getPayments(organization_code :str, name :str = None):
+def getPayments(organization_code :str, name :str):
     try:
         contributions = ThisAppModel.displayContributions(organization_code, ACADEMIC_YEAR)
         request_contribution = name if name != 'default' else contributions[0]['name']

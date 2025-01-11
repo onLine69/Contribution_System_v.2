@@ -1,3 +1,25 @@
+#filter-area {
+    width: 90%;
+    margin: 0 auto;
+    height: 300px;
+    background-color: #F4F5FF;
+    position: sticky;
+    top: 100px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#operation-area {
+    width: 100%;
+    background-color: #F4F5FF;
+    position: sticky;
+    top: 400px;
+    z-index: 1000;
+}
+
 #payment-records-actions{
     display: flex;
     flex-direction: row;
@@ -88,6 +110,42 @@
 }
 
 /* For the Modal */
+.payment-modal {
+    width: 80%;
+    max-height: 70vh; /* Set maximum height to 70% of viewport height */
+    overflow-y: auto; /* Enable vertical scrolling when content overflows */
+    margin: 10px auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    position: fixed;  /* Makes the modal fixed in place, not affected by scrolling */
+    top: 50%;  /* Centers the modal vertically */
+    left: 50%;  /* Centers the modal horizontally */
+    transform: translate(-50%, -50%);  /* Offsets the modal to ensure it's perfectly centered */
+    z-index: 1002;
+}
+
+.payment-modal h1 {
+    width: 50%;
+    margin: 10px auto;
+    display: flex;
+    justify-content: center;
+}
+
+.payment-modal .table-area {
+    max-height: 50vh;
+    overflow-y: auto;
+    overflow-x: auto;
+    margin: 20px auto;
+}
+
+.payment-modal .table-area table {
+    width: 90%;
+    border-collapse: collapse;
+}
+
 .modal-table-header{
     padding: 10px;
     border: 1px solid #ccc;
@@ -98,8 +156,8 @@
 }
 
 .form-title {
-    font-size: medium;
-    margin: 5px 20px;
+    font-size: large;
+    margin: 3px 20px;
 }
 
 .form-control {
