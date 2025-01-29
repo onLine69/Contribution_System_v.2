@@ -13,8 +13,7 @@ def getPayments(organization_code :str, name :str):
 
         data = {
             'contributions': contributions,
-            'chosen_contribution': ThisAppModel.searchContributions(request_contribution, organization_code, ACADEMIC_YEAR)[0],
-            'program_codes': ThisAppModel.getProgramCodes(organization_code)
+            'chosen_contribution': ThisAppModel.searchContributions(request_contribution, organization_code, ACADEMIC_YEAR)[0]
         }
 
         paid_students = PaymentRecordsModel.fetchPaid(request_contribution, ACADEMIC_YEAR)

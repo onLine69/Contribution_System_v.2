@@ -73,7 +73,7 @@ VALUES 	('CCS-EC', 'BSCS'),
 ('CCS-EC', 'BSIS');
 
 INSERT INTO `contributions` (`name`, `amount`, `academic_year`, `collecting_org_code`) 
-VALUES 	('1st Semester', 0, '2024-2025', 'CCS-EC'),
-('2nd Semester', 0, '2024-2025', 'CCS-EC');
+VALUES 	('1st Semester', 340, '2024-2025', 'CCS-EC'),
+('2nd Semester', 201, '2024-2025', 'CCS-EC');
 
 

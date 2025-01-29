@@ -155,10 +155,10 @@ export default function PaymentRecords() {
               {payments.length > 0 ? (
                 <td colSpan="8">
                   No payment record matches the parameters. &#123; '
-                  {columnSearch}' has "{paramSearch}" &#125;
+                  {searchParams.column}' has "{searchParams.input}" &#125;
                   <br />
                   Filters: {filterParams.programFilter} &#40;Program&#41; |{" "}
-                  {filterParams.yearFilter}
+                  {filterParams.yearFilter !== "0" ? filterParams.yearFilter : "All"}
                   &#40;Year Level&#41; | {filterParams.statusFilter}{" "}
                   &#40;Status&#41;
                 </td>
