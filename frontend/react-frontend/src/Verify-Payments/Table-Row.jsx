@@ -3,7 +3,7 @@ export default function TableRow({ verify }) {
   const formattedDate = parsedDateTime.toISOString().replace('T', ' ').slice(0, 19);
   
   return (
-    <tr>
+    <tr style={{ width: "100%" }}>
         <td>
             <input 
             type="checkbox" 
@@ -21,7 +21,7 @@ export default function TableRow({ verify }) {
         <td>{verify.id_number}</td>
         <td>{verify.full_name}</td>
         <td>{verify.payment_mode}</td>
-        <td>{verify.transaction_message}</td>
+        <td style={{ width: verify.transaction_message !== "".trim() ? "30%" : "auto" }}>{verify.transaction_message}</td>
     </tr>
   );
 }

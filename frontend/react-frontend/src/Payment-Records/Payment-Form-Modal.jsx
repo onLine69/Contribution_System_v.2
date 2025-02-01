@@ -10,7 +10,8 @@ export default function PaymentFormModal({paymentsInfo, isOpen, closeModal, fetc
     const modal = (
         <div className="payment-modal">
           <h1>Transact Payments</h1>
-          <p className='form-title'><b>Name: </b>{paymentsInfo.name}</p>
+          <p className='form-title'><b>Contribution Name: </b>{paymentsInfo.name}</p>
+          <p className='form-title'><b>Number of Students: </b>{paymentsInfo.students_count}</p>
           <p className='form-title'><b>Total Amount: </b>&#8369; {paymentsInfo.total_value}</p>
 
           <div className="table-area">

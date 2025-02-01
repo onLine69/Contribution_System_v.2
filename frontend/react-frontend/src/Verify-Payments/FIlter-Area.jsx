@@ -1,4 +1,4 @@
-export default function FilterArea({ programCodes, setFilterParams }) {
+export default function FilterArea({ programCodes, setFilterParams, stat}) {
     return (
         <div id="filter-records" className="card">
             <h3 className="card-title">Filter List</h3>
@@ -17,6 +17,7 @@ export default function FilterArea({ programCodes, setFilterParams }) {
                 <option value={3}>3rd Year</option>
                 <option value={4}>4th Year</option>
             </select>
+            <p><b>Payments Count: </b>{stat}</p>
         </div>
     );
 }

@@ -24,6 +24,7 @@ export default async function transactPayments(setPaymentTransactions,selectedCo
         const transactionsInfo = {
             "name": selectedContribution.name,
             "amount": selectedContribution.amount,
+            "students_count": transactionList.length,
             "total_value": selectedContribution.amount * transactionList.length,
             "transactions": transactionList,
             setPaymentTransactions: setPaymentTransactions

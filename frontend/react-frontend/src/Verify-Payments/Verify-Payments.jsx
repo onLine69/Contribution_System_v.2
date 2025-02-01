@@ -3,10 +3,14 @@ import TableHeader from './Table-Header.jsx';
 import TableRow from './Table-Row.jsx';
 import FilterArea from './FIlter-Area.jsx';
 import StatisticsArea from './Statistic-Area.jsx';
+import VerifyFormModal from './Verify-Form-Modal.jsx';
 
 
 import fetchProgramCodes from "../fetchProgramCodes.js";
 import fetchVerify from "./fetchVerify.js";
+import verifyPayments from './verifyPayments.js';
+
+import "./Verify-Payments.css";
 
 export default function VerifyPayments() {
   const [searchParams, setSearchParams] = useState({
@@ -15,7 +19,7 @@ export default function VerifyPayments() {
   });
   const [filterParams, setFilterParams] = useState({
     yearFilter: "0",
-    statusFilter: "All",
+    programFilter: "All"
   });
   const [verifies, setVerifies] = useState([]);
   const [error, setError] = useState(null);
@@ -23,6 +27,7 @@ export default function VerifyPayments() {
   const [contributions, setContributions] = useState([]);
   const [selectedContribution, setSelectedContribution] = useState({});
   
+  const [verifyTransactions, setVerifyTransactions] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Function to show the modal
   const showModal = () => {
@@ -80,12 +85,11 @@ export default function VerifyPayments() {
               id="transact-payments"
               title="Transact Selected Records"
               onClick={() => {
-                alert(searchParams.column + ": " + searchParams.input);
-                // transactPayments(
-                //   setPaymentTransactions,
-                //   selectedContribution,
-                //   showModal
-                // );
+                verifyPayments(
+                  setVerifyTransactions,
+                  selectedContribution,
+                  showModal
+                );
               }}
             >
               Verify
@@ -95,11 +99,11 @@ export default function VerifyPayments() {
       </div>
     );
 
-  const filteredVerifies = filterVerifies(verifies, filterParams, searchParams);
-  return (
-      <div>
-        <div id="filter-area">
-          <FilterArea programCodes={programCodes} setFilterParams={setFilterParams} />
+    const filteredVerifies = filterVerifies(verifies, filterParams, searchParams);
+
+    const filterArea = (
+      <div id="filter-area">
+          <FilterArea programCodes={programCodes} setFilterParams={setFilterParams} stat = {filteredVerifies.length}/>
           <StatisticsArea 
             contributions={contributions} 
             choosenContribution={{
@@ -109,7 +113,19 @@ export default function VerifyPayments() {
             setters={setters}
           />
         </div>
+    );
+  return (
+      <div>
+        {filterArea}
         {operationArea}
+        {isModalOpen && <VerifyFormModal
+                  verifiesInfo={verifyTransactions}
+                  isOpen={isModalOpen}
+                  closeModal={hideModal}
+                  programCodes={programCodes}
+                  fetchVerify={fetchVerify}
+                  setters={setters}
+                />}
         <table>
           <TableHeader />
           <tbody>
@@ -133,8 +149,7 @@ export default function VerifyPayments() {
                     <br />
                     Filters: {filterParams.programFilter} &#40;Program&#41; |{" "}
                     {filterParams.yearFilter !== "0" ? filterParams.yearFilter : "All"}
-                    &#40;Year Level&#41; | {filterParams.statusFilter}{" "}
-                    &#40;Status&#41;
+                    &#40;Year Level&#41;
                   </td>
                 ) : (
                   <td colSpan="8">
@@ -160,23 +175,15 @@ function filterVerifies(verifies, filterParams, searchParams) {
   return verifies
     .filter((payment) => {
       return (
-        (filterParams.programFilter === "All" ||
+        ((filterParams.programFilter === "All" ||
           payment["program_code"] === filterParams.programFilter) &&
         (filterParams.yearFilter === "0" ||
-          payment["year_level"] === filterParams.yearFilter)
+          payment["year_level"] === filterParams.yearFilter)) &&
+        payment[searchParams.column].includes(searchParams.input)
       );
-    })
-    .filter((payment) =>
-      payment[searchParams.column].includes(searchParams.input)
-    ) // Filter first
-    .sort((a, b) => {
-      // Sorting priority: program_code, then year_level, then full_name
-      if (a.program_code < b.program_code) return -1;
-      if (a.program_code > b.program_code) return 1;
-      if (a.year_level < b.year_level) return -1;
-      if (a.year_level > b.year_level) return 1;
-      if (a.full_name < b.full_name) return -1;
-      if (a.full_name > b.full_name) return 1;
+    }).sort((a, b) => {
+      if (a.id < b.id) return -1;
+      if (a.id > b.id) return 1;
       return 0;
     });
 }

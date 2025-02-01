@@ -71,3 +71,29 @@ class ThisAppModel:
                 raise e
             finally:
                 cursor.close()  # Ensure the cursor is closed
+
+    @staticmethod
+    def getBlockReps(organization_code :str):
+        connection = DBConnection.get_connection()
+        with connection.cursor() as cursor:    
+            try:
+                search_query = f"""
+                    SELECT `s`.`full_name`, `s`.`year_level`, `s`.`program_code` 
+                    FROM `blockreps` AS `b`
+                    LEFT JOIN `students` AS `s`
+                    ON `b`.id_number = `s`.id_number
+                    WHERE `s`.`program_code` 
+                    IN (
+                        SELECT `program_code` 
+                        FROM `programs`
+                        WHERE `organization_code` = %s
+                    )
+                    ORDER BY `program_code` ASC, `year_level` ASC;
+                """
+                cursor.execute(search_query, (organization_code, ))
+                return cursor.fetchall()
+            except Exception as e:
+                connection.rollback()  # Rollback in case of error
+                raise e
+            finally:
+                cursor.close()  # Ensure the cursor is closed

@@ -7,19 +7,18 @@ class VerifyPaymentsModel:
         with connection.cursor() as cursor:
             try:
                 fetch_query = """
-                    SELECT `t`.`id`, `t`.`datetime`, `s`.`id_number`, `s`.`full_name`, `t`.`payment_mode`, `t`.`transaction_message`
+                    SELECT `t`.`id`, `t`.`datetime`, `s`.`id_number`, `s`.`full_name`, `t`.`payment_mode`, `t`.`transaction_message`, `s`.`program_code`, `s`.`year_level`
                     FROM `transactions` AS `t`
                     LEFT JOIN `students` AS `s` ON `t`.`payer_id` = `s`.`id_number`
                     WHERE `t`.`status` = "Pending" 
                     AND `t`.`contribution_name` = %s 
                     AND `t`.`contribution_ay` = %s 
                     AND `s`.`id_number` NOT IN (
-                        SELECT `st`.`id_number`
-                        FROM `transactions` AS `tr`
-                        LEFT JOIN `students` AS `st` ON `tr`.`payer_id` = `st`.`id_number`
-                        WHERE (`tr`.`status` = "Accepted") 
-                        AND `tr`.`contribution_name` = %s 
-                        AND `tr`.`contribution_ay` = %s
+                        SELECT `payer_id` 
+                        FROM `transactions`
+                        WHERE `status` = "Accepted"
+                        AND `contribution_name` = %s 
+                        AND `contribution_ay` = %s
                     )
                 """
                 fetch_params = [contribution_name, academic_year, contribution_name, academic_year]
@@ -35,7 +34,7 @@ class VerifyPaymentsModel:
                 cursor.close()  # Ensure the cursor is closed 
 
     @staticmethod
-    def verifyTransactions(name, acad_year, amount, payer_ids, transaction_messages):
+    def verifyTransactions(name, acad_year, amount, payments):
         connection = DBConnection.get_connection()
         with connection.cursor() as cursor:
             try:
@@ -49,11 +48,11 @@ class VerifyPaymentsModel:
                     WHERE  `payer_id` = %s AND `contribution_name` = %s AND `contribution_ay` = %s AND `status` = "Accepted"
                 """ 
                 
-                for n in range(0, len(payer_ids)):
-                    cursor.execute(check_query, (payer_ids[n], name, acad_year))
+                for n in range(0, len(payments)):
+                    cursor.execute(check_query, (payments[n]['student_id'], name, acad_year))
                     recorded = cursor.fetchone()['COUNT(`payer_id`)']
                     if recorded == 0:
-                        cursor.execute(transact_query, (name, acad_year, payer_ids[n], amount, transaction_messages[n]))
+                        cursor.execute(transact_query, (name, acad_year, payments[n]['student_id'], amount, payments[n]['student_note']))
                         connection.commit()
                 
             except Exception as e:
