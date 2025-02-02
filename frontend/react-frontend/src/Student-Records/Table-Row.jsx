@@ -17,7 +17,6 @@ export default function TableRow({ student, count }) {
   const hideModal = () => {
     setIsModalOpen(false); // Set state to close the modal
   };
-
   return (
     <>
     <tr>
@@ -27,7 +26,7 @@ export default function TableRow({ student, count }) {
       <td title={student.gender}>{student.gender}</td>
       <td title={student.year_level}>{student.year_level}</td>
       <td title={student.program_code}>{student.program_code}</td>
-      <td title={student.notes}>{student.notes}</td>
+      <td title={student.notes}>{student.note}</td>
       <td>
         <button type="button" className={"edit-student"} onClick={showModal}>Edit</button>
       </td>

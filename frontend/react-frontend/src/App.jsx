@@ -3,6 +3,7 @@ import Navigation from "./Navigation/Navigation.jsx";
 import Dashboard from "./Dashboard/Dashboard.jsx";
 import PaymentRecords from "./Payment-Records/Payment-Records.jsx";
 import VerifyPayments from "./Verify-Payments/Verify-Payments.jsx";
+import TransactionHistory from "./Transaction-History/Transaction-History.jsx";
 import StudentRecords from "./Student-Records/Student-Records.jsx";
 import { Route, Routes } from "react-router-dom";
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/payment-records" element={<PaymentRecords />} />
           <Route path="/verify-payments" element={<VerifyPayments />} />
+          <Route path="/transaction-history" element={<TransactionHistory />} />
           <Route path="/student-records" element={<StudentRecords />} />
         </Routes>
       </main>

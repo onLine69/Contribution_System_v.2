@@ -12,7 +12,7 @@ export default function StudentFormModal({ purpose, student, isOpen , closeModal
         gender: student?.gender || 'M',
         year_level: student?.year_level || 1,
         program_code: student?.program_code || programCodes[0],
-        notes: student?.notes || '',
+        notes: student?.note || '',
     });
 
     const [errors, setErrors] = useState({});
