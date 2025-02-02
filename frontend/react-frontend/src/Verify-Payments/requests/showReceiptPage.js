@@ -3,7 +3,7 @@ import generateReceiptsPDF from './generateReceiptsPDF.js';
 export default function showReceiptPage(details) {
     // Create a new tab/window
     const newTab = window.open();
-
+    details = { ...details, verification_date: new Date(details.verification_date).toISOString().split('T')[0] };
     // HTML content to display in the new tab
     const htmlContent = `
         <!DOCTYPE html>

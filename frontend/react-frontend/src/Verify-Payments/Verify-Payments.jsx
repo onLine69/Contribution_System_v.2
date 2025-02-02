@@ -7,8 +7,8 @@ import VerifyFormModal from './Verify-Form-Modal.jsx';
 
 
 import fetchProgramCodes from "../fetchProgramCodes.js";
-import fetchVerify from "./fetchVerify.js";
-import verifyPayments from './verifyPayments.js';
+import fetchVerify from "./requests/fetchVerify.js";
+import verifyPayments from './requests/verifyPayments.js';
 
 import "./Verify-Payments.css";
 
