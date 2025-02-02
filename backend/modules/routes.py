@@ -15,7 +15,7 @@ def programCodes(organization_code :str):
 @app.route('/contributions/<string:organization_code>', methods=["GET"])
 def contributions(organization_code :str):
     try:
-        contributions = ThisAppModel.displayContributions(organization_code)
+        contributions = ThisAppModel.displayContributions(organization_code, ACADEMIC_YEAR)
         return make_response(jsonify(contributions), 200)
     except Exception as e:
         print(e)

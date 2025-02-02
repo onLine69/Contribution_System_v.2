@@ -1,9 +1,9 @@
 // import recordVerified from "./recordVerified.js";
 import { useState, useEffect } from "react";
-import fetchBlockReps from "../fetchBlockReps";
+import fetchBlockReps from "../fetchBlockReps.js";
 
-import recordVerifiedPayments from './recordVerifiedPayments';
-import fetchAcademicYear from '../fetchAcademicYear';
+import recordVerifiedPayments from './requests/recordVerifiedPayments.js';
+import fetchAcademicYear from '../fetchAcademicYear.js';
 
 import Swal from 'sweetalert2'
 
