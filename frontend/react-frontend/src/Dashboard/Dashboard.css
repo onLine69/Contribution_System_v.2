@@ -6,3 +6,48 @@
     width: 100%;
     background-color: bisque;
 }
+
+.generate-pdf-btn {
+    cursor: pointer;
+    color: #3B46AB;
+    text-align: center;
+    border-radius: 5px;
+    border: 3px solid #3B46AB;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    width: 300px;
+}
+
+.list-modal {
+    width: 40%;
+    max-height: 70vh; /* Set maximum height to 70% of viewport height */
+    overflow-y: auto; /* Enable vertical scrolling when content overflows */
+    margin: 10px auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    position: fixed;  /* Makes the modal fixed in place, not affected by scrolling */
+    top: 50%;  /* Centers the modal vertically */
+    left: 50%;  /* Centers the modal horizontally */
+    transform: translate(-50%, -50%);  /* Offsets the modal to ensure it's perfectly centered */
+    z-index: 1002;
+}
+
+.edit-modal {
+    width: 50%;
+    height:fit-content;
+    background-color: white;
+    position: fixed;  /* Makes the modal fixed in place, not affected by scrolling */
+    top: 50%;  /* Centers the modal vertically */
+    left: 50%;  /* Centers the modal horizontally */
+    transform: translate(-50%, -50%);  /* Offsets the modal to ensure it's perfectly centered */
+    z-index: 1002;
+    padding: 20px;
+    border-radius: 20px;
+    border: black 1px solid;
+}

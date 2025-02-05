@@ -1,4 +1,4 @@
-export default async function fetchContributions(setContributions) {
+export default async function fetchContributions() {
     try {
         const response = await fetch("http://127.0.0.1:5000/contributions/CCS-EC", 
             { method: "GET" }
@@ -11,8 +11,9 @@ export default async function fetchContributions(setContributions) {
 
         const data = await response.json();
         console.log(data);
-        setContributions(data);
+        return data;
     } catch (error) {
         console.error("There was a problem with the fetch operation:", error.message);
+        return null;
     }
 };
