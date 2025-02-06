@@ -31,13 +31,11 @@ export default function PaymentRecords() {
   const [paymentTransactions, setPaymentTransactions] = useState({});
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // Function to show the modal
   const showModal = () => {
-    setIsModalOpen(true); // Set state to open the modal
+    setIsModalOpen(true);
   };
-  // Function to hide the modal
   const hideModal = () => {
-    setIsModalOpen(false); // Set state to close the modal
+    setIsModalOpen(false);
   };
 
   const setters = {
@@ -158,7 +156,9 @@ export default function PaymentRecords() {
                   {searchParams.column}' has "{searchParams.input}" &#125;
                   <br />
                   Filters: {filterParams.programFilter} &#40;Program&#41; |{" "}
-                  {filterParams.yearFilter !== "0" ? filterParams.yearFilter : "All"}
+                  {filterParams.yearFilter !== "0"
+                    ? filterParams.yearFilter
+                    : "All"}
                   &#40;Year Level&#41; | {filterParams.statusFilter}{" "}
                   &#40;Status&#41;
                 </td>

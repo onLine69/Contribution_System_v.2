@@ -20,36 +20,18 @@ export default function OptionsArea() {
         setIsEditModalOpen(false);
     };
 
-    const buttonStyles = {
-        cursor: "pointer",
-        width: "70%",
-        margin: "5px auto",
-        height: "30px",
-        borderRadius: "8px"
-    };
     return (
         <>
-        <div 
-        style={{
-            width: "20%",
-            height: "100%",
-            padding: "20px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            border: "black 1px solid"
-        }}
-        >
+        <div className="options-area">
             <div>
                 <h3 className="card-title">Options</h3>
             </div>
             <button type="button"
             onClick={openEditModal}
-            style={buttonStyles}>Edit Contributions</button>
+            >Edit Contributions</button>
             <button type="button"
              onClick={openListModal}
-             style={buttonStyles}>Generate List</button>
+             >Generate List</button>
         </div>
         {isListModalOpen && <GenerateListModal isOpen={isListModalOpen} closeModal={closeListModal}/>}
         {isEditModalOpen && <EditModal isOpen={isEditModalOpen} closeModal={closeEditModal}/>}

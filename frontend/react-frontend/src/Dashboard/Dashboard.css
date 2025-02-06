@@ -1,53 +1,171 @@
 .Dashboard {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    background-color: bisque;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: bisque;
 }
 
-.generate-pdf-btn {
-    cursor: pointer;
-    color: #3B46AB;
-    text-align: center;
-    border-radius: 5px;
-    border: 3px solid #3B46AB;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    height: 30px;
-    width: 300px;
+.operations-area {
+  width: 80%;
+  height: 20%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  position: sticky;
+  top: 100px;
+  z-index: 1000;
+  background-color: #f4f5ff;
+  margin: 0px auto;
 }
 
 .list-modal {
-    width: 40%;
-    max-height: 70vh; /* Set maximum height to 70% of viewport height */
-    overflow-y: auto; /* Enable vertical scrolling when content overflows */
-    margin: 10px auto;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-    position: fixed;  /* Makes the modal fixed in place, not affected by scrolling */
-    top: 50%;  /* Centers the modal vertically */
-    left: 50%;  /* Centers the modal horizontally */
-    transform: translate(-50%, -50%);  /* Offsets the modal to ensure it's perfectly centered */
-    z-index: 1002;
+  width: 40%;
+  max-height: 70vh; /* Set maximum height to 70% of viewport height */
+  overflow-y: auto; /* Enable vertical scrolling when content overflows */
+  margin: 10px auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  position: fixed; /* Makes the modal fixed in place, not affected by scrolling */
+  top: 50%; /* Centers the modal vertically */
+  left: 50%; /* Centers the modal horizontally */
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Offsets the modal to ensure it's perfectly centered */
+  z-index: 1002;
 }
 
 .edit-modal {
-    width: 50%;
-    height:fit-content;
-    background-color: white;
-    position: fixed;  /* Makes the modal fixed in place, not affected by scrolling */
-    top: 50%;  /* Centers the modal vertically */
-    left: 50%;  /* Centers the modal horizontally */
-    transform: translate(-50%, -50%);  /* Offsets the modal to ensure it's perfectly centered */
-    z-index: 1002;
-    padding: 20px;
-    border-radius: 20px;
-    border: black 1px solid;
+  width: 50%;
+  height: fit-content;
+  background-color: white;
+  position: fixed; /* Makes the modal fixed in place, not affected by scrolling */
+  top: 50%; /* Centers the modal vertically */
+  left: 50%; /* Centers the modal horizontally */
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Offsets the modal to ensure it's perfectly centered */
+  z-index: 1002;
+  padding: 20px;
+  border-radius: 20px;
+  border: black 1px solid;
+}
+
+.edit-modal h1 {
+  width: 50%;
+  margin: 10px auto;
+  display: flex;
+  justify-content: center;
+}
+
+.edit-modal .form hr {
+  border: 1px solid black;
+  width: 90%;
+}
+
+.save-button {
+  padding: 10px 20px;
+  background-color: #1b8302;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.list-modal h1 {
+  width: 50%;
+  margin: 10px auto;
+  display: flex;
+  justify-content: center;
+}
+
+#filter-dashboard-records {
+  width: 70%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  border: black solid 1px;
+  padding: 20px;
+  margin: 0px auto;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.dropdowns {
+  width: 30%;
+  margin: 10px auto;
+  height: 30px;
+  border-radius: 8px;
+}
+
+.options-area {
+  width: 20%;
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: black 1px solid;
+}
+
+.options-area button {
+  cursor: pointer;
+  width: 70%;
+  margin: 5px auto;
+  height: 30px;
+  border-radius: 8px;
+}
+
+.graph-display-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  height: calc(100vh - 300px);
+  margin: 0px auto;
+  gap: 5px;
+}
+
+.graph-area {
+  width: 100%;
+  height: 70%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 0px auto;
+}
+
+.graph-report {
+  max-width: 45%;
+  max-height: 100%;
+}
+
+.generate-pdf-btn {
+  cursor: pointer;
+  color: #3b46ab;
+  text-align: center;
+  border-radius: 5px;
+  border: 3px solid #3b46ab;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  width: 300px;
 }

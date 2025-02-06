@@ -41,15 +41,7 @@ export default function StudentRecords() {
   }, []);
 
   const operationArea = (
-    <div
-      style={{
-        width: "100%",
-        backgroundColor: "#F4F5FF",
-        position: "sticky",
-        top: "100px",
-        zIndex: "1000",
-      }}
-    >
+    <div className="student-record-operation">
       <div id="student-records-actions">
         <div id="search-student-form">
           <select
@@ -98,22 +90,22 @@ export default function StudentRecords() {
   );
 
   const filteredStudents = students
-                          .filter((student) => student[columnSearch].includes(paramSearch)) // Filter first
-                          .sort((a, b) => {
-                            // Sorting priority: program_code, then year_level, then full_name
-                            if (a.program_code < b.program_code) return -1;
-                            if (a.program_code > b.program_code) return 1;
-                            if (a.year_level < b.year_level) return -1;
-                            if (a.year_level > b.year_level) return 1;
-                            if (a.full_name < b.full_name) return -1;
-                            if (a.full_name > b.full_name) return 1;
-                            return 0;
-                          });
+    .filter((student) => student[columnSearch].includes(paramSearch)) // Filter first
+    .sort((a, b) => {
+      // Sorting priority: program_code, then year_level, then full_name
+      if (a.program_code < b.program_code) return -1;
+      if (a.program_code > b.program_code) return 1;
+      if (a.year_level < b.year_level) return -1;
+      if (a.year_level > b.year_level) return 1;
+      if (a.full_name < b.full_name) return -1;
+      if (a.full_name > b.full_name) return 1;
+      return 0;
+    });
 
   return (
     <>
       {/* Use StudentContext.Provider to pass the setStudents function */}
-      <StudentContext.Provider value={{setStudents, programCodes}}>
+      <StudentContext.Provider value={{ setStudents, programCodes }}>
         {operationArea}
         {isAddModalOpen && (
           <StudentFormModal
@@ -128,7 +120,10 @@ export default function StudentRecords() {
           <tbody>
             {error ? (
               <tr key="error-row">
-                <td colSpan="8"> Error: {error.message}. Check the backend if working. </td>
+                <td colSpan="8">
+                  {" "}
+                  Error: {error.message}. Check the backend if working.{" "}
+                </td>
               </tr>
             ) : filteredStudents.length > 0 ? (
               filteredStudents.map((student, index) => (
@@ -141,7 +136,11 @@ export default function StudentRecords() {
             ) : (
               <tr key="error-row">
                 {students.length > 0 ? (
-                  <td colSpan="8"> No student matches the search parameters. &#123; '{columnSearch}' has "{paramSearch}" &#125; </td>
+                  <td colSpan="8">
+                    {" "}
+                    No student matches the search parameters. &#123; '
+                    {columnSearch}' has "{paramSearch}" &#125;{" "}
+                  </td>
                 ) : (
                   <td colSpan="8">
                     <i>No Student</i>

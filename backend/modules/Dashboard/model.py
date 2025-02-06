@@ -11,22 +11,20 @@ class DashboardModel:
                 count = []
                 chosen_year = int(year)
                 fetch_query =   """
-                                SELECT COUNT(*) FROM `transactions` AS `t` LEFT JOIN `students` AS `s` 
-                                ON `t`.`payer_id` = `s`.`id_number`
-                                WHERE `t`.`contribution_name` = %s
-                                AND `t`.`contribution_ay` = %s
-                                AND (YEAR(`t`.`datetime`) < %s OR (YEAR(`t`.`datetime`) = %s AND MONTH(`t`.`datetime`) <= %s)) 
-                                AND `t`.`status` = "Accepted" 
-                                AND `s`.`program_code` = %s 
-                                AND `s`.`year_level` = %s;
-                                """
+                    SELECT COUNT(*) FROM `transactions` AS `t` LEFT JOIN `students` AS `s` 
+                    ON `t`.`payer_id` = `s`.`id_number`
+                    WHERE `t`.`contribution_name` = %s
+                    AND `t`.`contribution_ay` = %s
+                    AND (YEAR(`t`.`datetime`) < %s OR (YEAR(`t`.`datetime`) = %s AND MONTH(`t`.`datetime`) <= %s)) 
+                    AND `t`.`status` = "Accepted" 
+                    AND `s`.`program_code` = %s 
+                    AND `s`.`year_level` = %s;
+                """
                 for year_level in year_levels:
-                    print(contribution_name, ACADEMIC_YEAR, chosen_year, month, program_code, year_level)
                     cursor.execute(fetch_query, (contribution_name, ACADEMIC_YEAR, chosen_year, chosen_year, month, program_code, year_level))
                     counter = cursor.fetchall()
-                    print(contribution_name, ACADEMIC_YEAR, chosen_year, chosen_year, month, program_code, year_level, "|", counter)
                     count.append(counter[0]['COUNT(*)'])
-                
+
                 return count
             except Exception as e:
                 connection.rollback()
@@ -43,8 +41,8 @@ class DashboardModel:
                 count = []
                 print(paid_count)
                 fetch_query =   """
-                                SELECT COUNT(*) FROM `students` WHERE `program_code` = %s AND `year_level` = %s;
-                                """
+                    SELECT COUNT(*) FROM `students` WHERE `program_code` = %s AND `year_level` = %s;
+                """
                 for s in range(0, 4):
                     cursor.execute(fetch_query, (program_code, year_levels[s]))
                     count.append(cursor.fetchall()[0]['COUNT(*)'] - paid_count[s])
@@ -66,10 +64,9 @@ class DashboardModel:
                     SET `name` = %s, `amount` = %s
                     WHERE `name` = %s AND `collecting_org_code` = %s;
                 """
-
+                # Update both contributions
                 cursor.execute(alter_query, (new_data['f_name'], new_data['f_amount'], original_names[0], new_data['organization_code']))
                 connection.commit()
-                
                 cursor.execute(alter_query, (new_data['s_name'], new_data['s_amount'], original_names[1], new_data['organization_code']))
                 connection.commit()
             except Exception as e:
@@ -90,10 +87,8 @@ class DashboardModel:
                     AND `program_code` = %s AND `year_level` = %s
                     ORDER BY `s`.`full_name`;
                 """
-
                 cursor.execute(fetch_statement, (program_code, year_level))
                 students = cursor.fetchall()
-                print('inside paid:', program_code, year_level, students)
                 return students
             except Exception as e:
                 connection.rollback()
@@ -113,9 +108,7 @@ class DashboardModel:
                     WHERE `t`.`payer_id` IS NULL AND `program_code` = %s AND `year_level` = %s
                     ORDER BY `s`.`full_name`;
                 """
-
                 cursor.execute(fetch_statement, (program_code, year_level))
-                
                 return cursor.fetchall()
             except Exception as e:
                 connection.rollback()
@@ -134,9 +127,7 @@ class DashboardModel:
                     WHERE `program_code` = %s AND `year_level` = %s
                     ORDER BY `full_name`;
                 """
-
                 cursor.execute(fetch_statement, (program_code, year_level))
-                
                 return cursor.fetchall()
             except Exception as e:
                 connection.rollback()

@@ -1,42 +1,42 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins');
+@import url("https://fonts.googleapis.com/css?family=Poppins");
 #header {
-    font-family: Poppins, sans-serif;
-    background-color: white;
-    height: 100px;
-    width: calc(100% - 275px);
-    margin: 0;
-    margin-left: 275px;
-    color: #3B46AB;
-    display: flex;
-    justify-content: end;
-    position: fixed;
-    top: 0;
-    z-index: 1000;
+  font-family: Poppins, sans-serif;
+  background-color: white;
+  height: 100px;
+  width: calc(100% - 275px);
+  margin: 0;
+  margin-left: 275px;
+  color: #3b46ab;
+  display: flex;
+  justify-content: end;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
 }
 
 #profile {
-    margin: auto 50px auto auto;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
-    width: 70%;
-    height: fit-content;
+  margin: auto 50px auto auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  width: 70%;
+  height: fit-content;
 }
 
 #profile-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 #profile-info p {
-    margin: -5px;
+  margin: -5px;
 }
 
 #profile-picture {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin: 0 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 0 10px;
 }

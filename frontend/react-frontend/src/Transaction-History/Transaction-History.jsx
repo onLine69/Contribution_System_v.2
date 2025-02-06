@@ -6,11 +6,10 @@ import FilterArea from "./FIlter-Area.jsx";
 import FilterRange from "./Filter-Range.jsx";
 import StatisticsArea from "./Statistic-Area.jsx";
 
-import fetchHistory from "./fetchHistory.js";
-import generateList from "./generateList.js";
+import fetchHistory from "./requests/fetchHistory.js";
+import generateList from "./requests/generateList.js";
 
 import fetchProgramCodes from "../fetchProgramCodes.js";
-
 
 export default function TransactionHistory() {
   const [searchParams, setSearchParams] = useState({
@@ -46,7 +45,12 @@ export default function TransactionHistory() {
     fetchHistory(selectedContribution?.name || "default", setters);
   }, []);
 
-  const filteredHistory = filterHistory(history, filterParams, dateTimeRange, searchParams);
+  const filteredHistory = filterHistory(
+    history,
+    filterParams,
+    dateTimeRange,
+    searchParams
+  );
   const operationArea = (
     <div id="operation-area">
       <div id="payment-records-actions">
@@ -78,125 +82,125 @@ export default function TransactionHistory() {
           />
         </div>
         {/* Generate List Button */}
-      <button
-                style={{
-                    cursor: "pointer",
-                    height: "40px",
-                    width: "150px",
-                    margin: "5px",
-                    borderRadius: "5px",
-                    border: "3px solid #2C2C2C",
-                    color: "#2C2C2C",
-                    fontWeight: "bolder",
-                    backgroundColor: "#FFF",
-                }}
-                onClick={() => generateList(filteredHistory)}
-            >
-                Generate List in PDF
-            </button>
+        <button
+          className="generate-transaction-pdf"
+          onClick={() => generateList(filteredHistory)}
+        >
+          Generate List in PDF
+        </button>
       </div>
     </div>
   );
 
-    const filterArea = (
-        <div id="filter-area">
-            <FilterArea
-                programCodes={programCodes}
-                setFilterParams={setFilterParams}
-            />
-            <FilterRange dateTimeRange={dateTimeRange} setDateTimeRange={setDateTimeRange} />
-            <StatisticsArea contributions={contributions} 
-            choosenContribution={{
-                selectedContribution: selectedContribution,
-                fetchHistory: fetchHistory
-            }}
-            setters={setters}
-            />
-        </div>
-    );
+  const filterArea = (
+    <div id="filter-area">
+      <FilterArea
+        programCodes={programCodes}
+        setFilterParams={setFilterParams}
+      />
+      <FilterRange
+        dateTimeRange={dateTimeRange}
+        setDateTimeRange={setDateTimeRange}
+      />
+      <StatisticsArea
+        contributions={contributions}
+        choosenContribution={{
+          selectedContribution: selectedContribution,
+          fetchHistory: fetchHistory,
+        }}
+        setters={setters}
+      />
+    </div>
+  );
 
-return (
+  return (
     <div>
-        {filterArea}
-        {operationArea}
-        <table>
-            <TableHeader  />
-            <tbody>
-                    {error ? (
-                        <tr key="error-row">
-                            <td colSpan="8">
-                            {" "}
-                            Error: {error.message}. Check the backend if working.{" "}
-                            </td>
-                        </tr>
-                        ) : filteredHistory.length > 0 ? (
-                            filteredHistory.map((history, index) => (
-                            <TableRow key={history.number} history={history} />
-                        ))
-                        ) : (
-                        <tr key="error-row">
-                            {history.length > 0 ? (
-                            <td colSpan="8">
-                                No payment record matches the parameters. &#123; '
-                                {searchParams.column}' has "{searchParams.input}" &#125;
-                                <br />
-                                Filters: {filterParams.programFilter} &#40;Program&#41; |{" "}
-                                {filterParams.yearFilter !== "0" ? filterParams.yearFilter : "All"}
-                                &#40;Year Level&#41; | {filterParams.statusFilter}{" "}
-                                &#40;Status&#41;
-                                Date Time Range: {dateTimeRange.start} - {dateTimeRange.end}
-                            </td>
-                            ) : (
-                            <td colSpan="8">
-                                <i>No Payment Record</i>
-                            </td>
-                            )}
-                        </tr>
-                    )}
-                </tbody>
-            <tfoot>
-                <tr>
+      {filterArea}
+      {operationArea}
+      <table>
+        <TableHeader />
+        <tbody>
+          {error ? (
+            <tr key="error-row">
+              <td colSpan="8">
+                {" "}
+                Error: {error.message}. Check the backend if working.{" "}
+              </td>
+            </tr>
+          ) : filteredHistory.length > 0 ? (
+            filteredHistory.map((history, index) => (
+              <TableRow key={history.number} history={history} />
+            ))
+          ) : (
+            <tr key="error-row">
+              {history.length > 0 ? (
                 <td colSpan="8">
-                    <i>End of Table</i>
+                  No payment record matches the parameters. &#123; '
+                  {searchParams.column}' has "{searchParams.input}" &#125;
+                  <br />
+                  Filters: {filterParams.programFilter} &#40;Program&#41; |{" "}
+                  {filterParams.yearFilter !== "0"
+                    ? filterParams.yearFilter
+                    : "All"}
+                  &#40;Year Level&#41; | {filterParams.statusFilter}{" "}
+                  &#40;Status&#41; Date Time Range: {dateTimeRange.start} -{" "}
+                  {dateTimeRange.end}
                 </td>
-                </tr>
-            </tfoot>
-        </table>
+              ) : (
+                <td colSpan="8">
+                  <i>No Payment Record</i>
+                </td>
+              )}
+            </tr>
+          )}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan="8">
+              <i>End of Table</i>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
     </div>
   );
 }
 
 function filterHistory(history, filterParams, dateTimeRange, searchParams) {
-    dateTimeRange = {
-        start: dateTimeRange.start === "" ? "" : dateFormat(dateTimeRange.start),
-        end: dateTimeRange.end === "" ? "" : dateFormat(dateTimeRange.end),
-    };
-    return history
-      .filter((transaction) => {
-        return (
-          (filterParams.programFilter === "All" ||
-            transaction["program_code"] === filterParams.programFilter) &&
-          (filterParams.yearFilter === "0" ||
-            transaction["year_level"] === filterParams.yearFilter) &&
-          (filterParams.statusFilter === "All" ||
-            transaction["status"] === filterParams.statusFilter)
-        );
-      })
-      .filter((transaction) => {
-        return (
-          (dateTimeRange.start === "" || transaction['datetime'] >= dateTimeRange.start) &&
-          (dateTimeRange.end === "" || transaction['datetime'] <= dateTimeRange.end)
-        );
-      })
-      .filter((transaction) => transaction[searchParams.column].toString().includes(searchParams.input))
-      .sort((a, b) => {
-        // Sorting priority: program_code, then year_level, then full_name
-        if (a.id < b.id) return -1;
-        if (a.id > b.id) return 1;
-        return 0;
-      });   
+  dateTimeRange = {
+    start: dateTimeRange.start === "" ? "" : dateFormat(dateTimeRange.start),
+    end: dateTimeRange.end === "" ? "" : dateFormat(dateTimeRange.end),
+  };
+  return history
+    .filter((transaction) => {
+      return (
+        (filterParams.programFilter === "All" ||
+          transaction["program_code"] === filterParams.programFilter) &&
+        (filterParams.yearFilter === "0" ||
+          transaction["year_level"] === filterParams.yearFilter) &&
+        (filterParams.statusFilter === "All" ||
+          transaction["status"] === filterParams.statusFilter)
+      );
+    })
+    .filter((transaction) => {
+      return (
+        (dateTimeRange.start === "" ||
+          transaction["datetime"] >= dateTimeRange.start) &&
+        (dateTimeRange.end === "" ||
+          transaction["datetime"] <= dateTimeRange.end)
+      );
+    })
+    .filter((transaction) =>
+      transaction[searchParams.column].toString().includes(searchParams.input)
+    )
+    .sort((a, b) => {
+      // Sorting priority: program_code, then year_level, then full_name
+      if (a.id < b.id) return -1;
+      if (a.id > b.id) return 1;
+      return 0;
+    });
 }
 
 function dateFormat(udate) {
-    return `${udate.replace("T", " ")}:00`
+  return `${udate.replace("T", " ")}:00`;
 }
