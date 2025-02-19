@@ -1,10 +1,25 @@
+import { useState } from "react";
+
 import "./Header.css";
 
-function Header() {
+import DetailsModal from "./Details-Modal.jsx";
+
+export default function Header() {
+  const [isOpen, setIsOpen] = useState(false);
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+
+
   return (
+    <>
     <header id="header">
       <div id="profile">
-        <div id="profile-info">
+        <div id="profile-info" onClick={openModal}>
           <p>
             <b>BUFFICOM OFFICER</b>
           </p>
@@ -19,7 +34,7 @@ function Header() {
         </div>
       </div>
     </header>
+    {isOpen && <DetailsModal isOpen={isOpen} closeModal={closeModal}/>}
+    </>
   );
 }
-
-export default Header;

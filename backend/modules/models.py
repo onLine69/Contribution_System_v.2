@@ -56,7 +56,7 @@ class ThisAppModel:
         connection = DBConnection.get_connection()
         with connection.cursor() as cursor:    
             try:
-                search_query = f"""
+                search_query = """
                     SELECT `name`, `amount`, `academic_year` 
                     FROM `contributions` 
                     WHERE `collecting_org_code` = %s 
@@ -77,21 +77,109 @@ class ThisAppModel:
         connection = DBConnection.get_connection()
         with connection.cursor() as cursor:    
             try:
-                search_query = f"""
+                search_query = """
                     SELECT `s`.`full_name`, `s`.`year_level`, `s`.`program_code` 
                     FROM `blockreps` AS `b`
                     LEFT JOIN `students` AS `s`
-                    ON `b`.id_number = `s`.id_number
+                    ON `b`.`id_number` = `s`.`id_number`
                     WHERE `s`.`program_code` 
                     IN (
                         SELECT `program_code` 
                         FROM `programs`
                         WHERE `organization_code` = %s
                     )
-                    ORDER BY `program_code` ASC, `year_level` ASC;
+                    ORDER BY `s`.`program_code` ASC, `s`.`year_level` ASC;
                 """
                 cursor.execute(search_query, (organization_code, ))
                 return cursor.fetchall()
+            except Exception as e:
+                connection.rollback()  # Rollback in case of error
+                raise e
+            finally:
+                cursor.close()  # Ensure the cursor is closed
+
+    @staticmethod
+    def getProfileDetails(organization_code :str):
+        connection = DBConnection.get_connection()
+        with connection.cursor() as cursor:    
+            try:
+                fetch_query = """
+                    SELECT * FROM `organizations`
+                    WHERE `code` = %s;
+                """
+                cursor.execute(fetch_query, (organization_code, ))
+                return cursor.fetchone()
+            except Exception as e:
+                connection.rollback()  # Rollback in case of error
+                raise e
+            finally:
+                cursor.close()  # Ensure the cursor is closed
+
+    @staticmethod
+    def getBlockRepsID(organization_code :str):
+        connection = DBConnection.get_connection()
+        with connection.cursor() as cursor:    
+            try:
+                fetch_query = """
+                    SELECT `b`.`id_number`
+                    FROM `blockreps` AS `b`
+                    LEFT JOIN `students` AS `s`
+                    ON `b`.`id_number` = `s`.`id_number`
+                    WHERE `s`.`program_code` 
+                    IN (
+                        SELECT `program_code` 
+                        FROM `programs`
+                        WHERE `organization_code` = %s
+                    )
+                    ORDER BY `s`.`program_code` ASC, `s`.`year_level` ASC;
+                """
+                cursor.execute(fetch_query, (organization_code, ))
+                return cursor.fetchall()
+            except Exception as e:
+                connection.rollback()  # Rollback in case of error
+                raise e
+            finally:
+                cursor.close()  # Ensure the cursor is closed
+
+    @staticmethod
+    def setBlockRepsID(organization_code :str, ids):
+        connection = DBConnection.get_connection()
+        with connection.cursor() as cursor:    
+            try:
+                # Remove IDs first
+                current_ids =  ThisAppModel.getBlockRepsID(organization_code)
+                remove_statement = """
+                    DELETE FROM `blockreps` WHERE `id_number` = %s ;
+                """
+                for id in current_ids:
+                    cursor.execute(remove_statement, id['id_number'])
+                    connection.commit()
+                
+                # Insert only valid student ids
+                insert_statement =  """
+                    INSERT INTO `blockreps` (`id_number`) VALUE (%s);
+                """
+                for id in ids:
+                    if len(id) > 0 and ThisAppModel.checkStudent(id)['COUNT(`id_number`)'] > 0:
+                        cursor.execute(insert_statement, (id, ))
+                        connection.commit()
+            except connection.Error as e:
+                connection.rollback()  # Rollback in case of error
+                raise e
+            finally:
+                cursor.close()  # Ensure the cursor is closed
+    
+    @staticmethod
+    def checkStudent(id :str):
+        connection = DBConnection.get_connection()
+        with connection.cursor() as cursor:    
+            try:
+                check_student = """
+                    SELECT COUNT(`id_number`) FROM `students`
+                    WHERE `id_number` = %s;
+                """
+                cursor.execute(check_student, (id, ))
+                return cursor.fetchone()
             except Exception as e:
                 connection.rollback()  # Rollback in case of error
                 raise e

@@ -1,4 +1,4 @@
-from flask import jsonify, make_response
+from flask import jsonify, make_response, request
 from . import app
 from .models import ThisAppModel
 from config import ACADEMIC_YEAR
@@ -37,3 +37,26 @@ def getAcademicYear():
     except Exception as e:
         print(e)
         return make_response(jsonify({'message': 'Error Academic Year'}), 400)
+
+@app.route('/get-account/<string:organization_code>', methods=["GET"])
+def getAccountDetails(organization_code :str):
+    try:
+        account_details = ThisAppModel.getProfileDetails(organization_code)
+        block_reps = ",".join(id["id_number"] for id in ThisAppModel.getBlockRepsID(organization_code))
+        
+        return make_response(jsonify({'account': account_details,
+                                      'block_reps': block_reps}), 200)
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'message': 'Error Academic Year'}), 400)
+
+@app.route('/set-block-reps', methods=["PUT"])
+def setBlockReps():
+    try:
+        req = request.get_json()
+        print(req)
+        ThisAppModel.setBlockRepsID(req['org_code'], req['block_reps'])
+        return make_response(jsonify({'message': "Blockreps Updated Sucessfully."}), 201)
+    except Exception as e:
+        print("Error:", e)
+        return make_response(jsonify({'message': str(e)}), 400)

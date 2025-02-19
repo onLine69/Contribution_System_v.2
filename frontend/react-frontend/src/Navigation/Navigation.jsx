@@ -209,8 +209,8 @@ function Navigation() {
         </ul>
       </nav>
       <div id="app-credits">
-        <p>&copy; 2024 CCS-EC</p>
-        <a href="/logout" title="Logout Session">
+        <p>&copy; 2025 CCS-EC</p>
+        <a href="/logout" title="Logout Session" className="disabled">
           Logout
         </a>
       </div>

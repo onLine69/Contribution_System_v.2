@@ -28,6 +28,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  cursor: pointer;
 }
 
 #profile-info p {
@@ -39,4 +40,41 @@
   height: 40px;
   border-radius: 50%;
   margin: 0 10px;
+}
+
+
+.overlay-details {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1001;
+}
+
+
+.modal-details {
+  width: 50%;
+  height: fit-content;
+  background-color: white;
+  position: fixed; /* Makes the modal fixed in place, not affected by scrolling */
+  top: 50%; /* Centers the modal vertically */
+  left: 50%; /* Centers the modal horizontally */
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Offsets the modal to ensure it's perfectly centered */
+  z-index: 1011;
+  padding: 20px;
+  border-radius: 20px;
+  border: black 1px solid;
+}
+
+.modal-details h1 {
+  width: 50%;
+  margin: 10px auto;
+  display: flex;
+  justify-content: center;
+  color: black;
 }

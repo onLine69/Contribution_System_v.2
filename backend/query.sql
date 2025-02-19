@@ -64,7 +64,7 @@ CREATE TABLE `transactions` (
     
 # Set Initial Values
 INSERT INTO `organizations` (`code`, `name`, `email`)
-VALUES ('CCS-EC', 'College of Computer Studies Executive Council', 'ccs@g.msuiit.edu.ph');
+VALUES ('CCS-EC', 'College of Computer Studies Executive Council', 'ccs.ec@g.msuiit.edu.ph');
 
 INSERT INTO `programs` (`organization_code`, `code`)
 VALUES 	('CCS-EC', 'BSCS'),
@@ -73,5 +73,5 @@ VALUES 	('CCS-EC', 'BSCS'),
 ('CCS-EC', 'BSIS');
 
 INSERT INTO `contributions` (`name`, `amount`, `academic_year`, `collecting_org_code`) 
-VALUES 	('1st Semester', 340, '2024-2025', 'CCS-EC'),
-('2nd Semester', 201, '2024-2025', 'CCS-EC');
+VALUES 	('1st Semester', 0, '2024-2025', 'CCS-EC'),
+('2nd Semester', 0, '2024-2025', 'CCS-EC');

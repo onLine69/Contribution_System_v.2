@@ -157,3 +157,8 @@
   color: #fff;
   text-decoration: none;
 }
+
+#app-credits a.disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+}
