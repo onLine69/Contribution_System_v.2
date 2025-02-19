@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 
+import "./Transaction-History.css";
+
 import TableHeader from "./Table-Header.jsx";
 import TableRow from "./Table-Row.jsx";
 import FilterArea from "./FIlter-Area.jsx";
