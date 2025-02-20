@@ -64,6 +64,7 @@ export default function EditModal({ isOpen, closeModal }) {
             className={`form-input`}
             min={0}
             readOnly={isReadOnly[0]}
+            onInput={(e) => {e.target.value = Math.abs(e.target.value)}}
             onChange={(e) => {
               setContributions({ ...contributions, f_amount: e.target.value });
             }}
@@ -102,6 +103,7 @@ export default function EditModal({ isOpen, closeModal }) {
             className={`form-input`}
             min={0}
             readOnly={isReadOnly[1]}
+            onInput={(e) => {e.target.value = Math.abs(e.target.value)}}
             onChange={(e) => {
               setContributions({ ...contributions, s_amount: e.target.value });
             }}
@@ -114,7 +116,6 @@ export default function EditModal({ isOpen, closeModal }) {
           className="save-button"
           onClick={async () => {
             const isSuccess = await updateContributions(contributions);
-            console.log(isSuccess);
             if (isSuccess) {
               closeModal();
             }
