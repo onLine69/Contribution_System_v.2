@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
-import fetchAccountDetails from "./fetchAccountDetails.js";
-import sendBlockrepIDs from "./sendBlockrepIDs.js"
+import fetchAccountDetails from "./requests/fetchAccountDetails.js";
+import sendBlockrepIDs from "./requests/sendBlockrepIDs.js"
 
 export default function DetailsModal({ isOpen, closeModal }) {
     const [accountDetails, setAccountDetails] = useState(

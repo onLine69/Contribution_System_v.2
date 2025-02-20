@@ -1,7 +1,7 @@
-export default async function generateStudentList(list_type) {
+export default async function generateStudentList(list_type, data_name) {
     if (list_type === "None") return;
-
-    fetch(`http://127.0.0.1:5000/dashboard/get-list/CCS-EC/${list_type}`)
+    console.log(list_type, data_name);
+    fetch(`http://127.0.0.1:5000/dashboard/get-list/CCS-EC/${list_type}/${data_name}`)
     .then(response => {
         if (!response.ok) {
             throw new Error("Network response was not ok");
@@ -20,7 +20,7 @@ export default async function generateStudentList(list_type) {
         const pageHeight = doc.internal.pageSize.getHeight();
         const header = "./src/assets/docs/Header.png";
         const footer = "./src/assets/docs/Footer.png";
-
+        
         doc.setFontSize(20);
         doc.setFont("times", "bold");
         const title = data['list-type'];
@@ -79,7 +79,7 @@ export default async function generateStudentList(list_type) {
                 currentY = 40; // Reset Y position for new page
             }
         });
-        doc.save(`${data['list-type']}.pdf`);
+        doc.save(`${data['list-type']}_${data_name}.pdf`);
     })
     .catch(error => {
         console.error("There was a problem with the fetch operation:", error);

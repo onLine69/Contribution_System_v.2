@@ -75,8 +75,9 @@ class DashboardModel:
             finally:
                 cursor.close()  # Ensure the cursor is closed 
     
+    # TODO: Fix list per contribution
     @staticmethod
-    def fetchPaidList(program_code :str, year_level :str):
+    def fetchPaidList(program_code :str, year_level :str, contribution_name :str):
         connection = DBConnection.get_connection()
         with connection.cursor() as cursor:
             try:
@@ -84,10 +85,11 @@ class DashboardModel:
                     SELECT `s`.`id_number`, `s`.`full_name`
                     FROM `transactions` AS `t` LEFT JOIN `students` AS `s` ON `t`.`payer_id` = `s`.`id_number`
                     WHERE `t`.`status` = "Accepted"
+                    AND `t`.`contribution_name` = %s
                     AND `program_code` = %s AND `year_level` = %s
                     ORDER BY `s`.`full_name`;
                 """
-                cursor.execute(fetch_statement, (program_code, year_level))
+                cursor.execute(fetch_statement, (contribution_name, program_code, year_level))
                 students = cursor.fetchall()
                 return students
             except Exception as e:
@@ -97,18 +99,18 @@ class DashboardModel:
                 cursor.close()  # Ensure the cursor is closed 
 
     @staticmethod
-    def fetchUnpaidList(program_code :str, year_level :str):
+    def fetchUnpaidList(program_code :str, year_level :str, contribution_name :str):
         connection = DBConnection.get_connection()
         with connection.cursor() as cursor:
             try:
                 fetch_statement =  """
                     SELECT `s`.`id_number`, `s`.`full_name`
                     FROM `students` AS `s`
-                    LEFT JOIN `transactions` AS `t` ON `s`.`id_number` = `t`.`payer_id` AND `t`.`status` = "Accepted"
+                    LEFT JOIN `transactions` AS `t` ON `s`.`id_number` = `t`.`payer_id` AND `t`.`status` = "Accepted" AND `t`.`contribution_name` = %s
                     WHERE `t`.`payer_id` IS NULL AND `program_code` = %s AND `year_level` = %s
                     ORDER BY `s`.`full_name`;
                 """
-                cursor.execute(fetch_statement, (program_code, year_level))
+                cursor.execute(fetch_statement, (contribution_name, program_code, year_level))
                 return cursor.fetchall()
             except Exception as e:
                 connection.rollback()

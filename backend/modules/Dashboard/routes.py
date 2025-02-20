@@ -47,8 +47,8 @@ def editContributions():
         print(f"Error: {e}")
         return make_response(jsonify({'message': str(e)}), 400)
     
-@dashboard_bp.route('/get-list/<string:organization_code>/<string:list_type>', methods=["GET"])
-def getList(organization_code :str, list_type :str):
+@dashboard_bp.route('/get-list/<string:organization_code>/<string:list_type>/<string:contribution_name>', methods=["GET"])
+def getList(organization_code :str, list_type :str, contribution_name :str):
     try:
         # Fetch the program codes
         programs = ThisAppModel.getProgramCodes(organization_code)
@@ -67,9 +67,9 @@ def getList(organization_code :str, list_type :str):
                     case "All":     # All students
                         data[key] = DashboardModel.fetchAllList(program['code'], year_level)
                     case "Paid":    # Paid students
-                        data[key] = DashboardModel.fetchPaidList(program['code'], year_level)
+                        data[key] = DashboardModel.fetchPaidList(program['code'], year_level, contribution_name)
                     case "Unpaid":  # Unpaid students
-                        data[key] = DashboardModel.fetchUnpaidList(program['code'], year_level)
+                        data[key] = DashboardModel.fetchUnpaidList(program['code'], year_level, contribution_name)
                     case _:
                         return make_response(jsonify({'message': 'Invalid type.'}), 400)
         return make_response(jsonify(data), 200)
